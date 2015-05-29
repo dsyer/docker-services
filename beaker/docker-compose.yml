@@ -1,0 +1,4 @@
+beaker:
+  image: beakernotebook/beaker
+  ports:
+    - "8800:8800"
