@@ -1,0 +1,449 @@
+2016-11-07 [15:48:32] [Server thread/INFO]: Selected English (eng) as the base language
+2016-11-07 [15:48:32] [Server thread/INFO]: Opening server on 0.0.0.0:19132
+2016-11-07 [15:48:32] [Server thread/INFO]: Genisys is distributed under the GPL License version 3 and later
+2016-11-07 [15:48:32] [Server thread/NOTICE]: Level "world" not found
+2016-11-07 [15:48:32] [Server thread/INFO]: Preparing level "world"
+2016-11-07 [15:48:32] [Server thread/NOTICE]: Spawn terrain for level "world" is being generated in the background
+2016-11-07 [15:48:33] [Server thread/NOTICE]: Level "nether" not found
+2016-11-07 [15:48:33] [Server thread/INFO]: Preparing level "nether"
+2016-11-07 [15:48:33] [Server thread/NOTICE]: Spawn terrain for level "nether" is being generated in the background
+2016-11-07 [15:48:33] [Server thread/INFO]: Starting GS4 status listener
+2016-11-07 [15:48:33] [Server thread/INFO]: Setting query port to 19132
+2016-11-07 [15:48:33] [Server thread/INFO]: Query running on 0.0.0.0:19132
+2016-11-07 [15:48:33] [Server thread/INFO]: Default game type: Creative Mode
+2016-11-07 [15:48:33] [Server thread/INFO]: Done (37.391s)! For help, type "help" or "?"
+2016-11-07 [15:50:39] [Server thread/INFO]: Unloading level "world"
+2016-11-07 [15:50:39] [Server thread/INFO]: Unloading level "nether"
+2016-11-07 [15:50:50] [Server thread/INFO]: Selected English (eng) as the base language
+2016-11-07 [15:50:50] [Server thread/INFO]: Opening server on 0.0.0.0:19132
+2016-11-07 [15:50:50] [Server thread/INFO]: Genisys is distributed under the GPL License version 3 and later
+2016-11-07 [15:50:50] [Server thread/INFO]: Preparing level "world"
+2016-11-07 [15:50:50] [Server thread/INFO]: Preparing level "nether"
+2016-11-07 [15:50:50] [Server thread/INFO]: Starting GS4 status listener
+2016-11-07 [15:50:50] [Server thread/INFO]: Setting query port to 19132
+2016-11-07 [15:50:50] [Server thread/INFO]: Query running on 0.0.0.0:19132
+2016-11-07 [15:50:50] [Server thread/INFO]: Default game type: Creative Mode
+2016-11-07 [15:50:50] [Server thread/INFO]: Done (0.477s)! For help, type "help" or "?"
+2016-11-07 [15:51:38] [Server thread/INFO]: Unloading level "world"
+2016-11-07 [15:51:39] [Server thread/INFO]: Unloading level "nether"
+2016-11-07 [15:51:55] [Server thread/WARNING]: SERVER IS RUNNING IN OFFLINE/INSECURE MODE!
+2016-11-07 [15:51:55] [Server thread/WARNING]: The server will make no attempt to authenticate usernames. Beware.
+2016-11-07 [15:51:55] [Server thread/WARNING]: While this makes the game possible to play without internet access, it also opens up the ability for hackers to connect with any username they choose.
+2016-11-07 [15:51:55] [Server thread/WARNING]: To change this, set "online-mode" to "true" in the server.properties file.
+2016-11-07 [15:51:55] [Server thread/INFO]: Selected English (eng) as the base language
+2016-11-07 [15:51:55] [Server thread/INFO]: Opening server on 0.0.0.0:19132
+2016-11-07 [15:51:55] [Server thread/INFO]: Genisys is distributed under the GPL License version 3 and later
+2016-11-07 [15:51:55] [Server thread/INFO]: Preparing level "world"
+2016-11-07 [15:51:55] [Server thread/INFO]: Preparing level "nether"
+2016-11-07 [15:51:55] [Server thread/INFO]: Starting GS4 status listener
+2016-11-07 [15:51:55] [Server thread/INFO]: Setting query port to 19132
+2016-11-07 [15:51:55] [Server thread/INFO]: Query running on 0.0.0.0:19132
+2016-11-07 [15:51:55] [Server thread/INFO]: Default game type: Creative Mode
+2016-11-07 [15:51:55] [Server thread/INFO]: Done (0.465s)! For help, type "help" or "?"
+2016-11-07 [15:54:37] [Server thread/INFO]: Unloading level "world"
+2016-11-07 [15:54:37] [Server thread/INFO]: Unloading level "nether"
+2016-11-07 [15:54:37] [Server thread/INFO]: Stopping other threads
+2016-11-07 [15:56:08] [Server thread/WARNING]: SERVER IS RUNNING IN OFFLINE/INSECURE MODE!
+2016-11-07 [15:56:08] [Server thread/WARNING]: The server will make no attempt to authenticate usernames. Beware.
+2016-11-07 [15:56:08] [Server thread/WARNING]: While this makes the game possible to play without internet access, it also opens up the ability for hackers to connect with any username they choose.
+2016-11-07 [15:56:08] [Server thread/WARNING]: To change this, set "online-mode" to "true" in the server.properties file.
+2016-11-07 [15:56:08] [Server thread/INFO]: Selected English (eng) as the base language
+2016-11-07 [15:56:08] [Server thread/INFO]: Opening server on 0.0.0.0:19132
+2016-11-07 [15:56:08] [Server thread/INFO]: Genisys is distributed under the GPL License version 3 and later
+2016-11-07 [15:56:09] [Server thread/INFO]: Preparing level "world"
+2016-11-07 [15:56:09] [Server thread/INFO]: Preparing level "nether"
+2016-11-07 [15:56:09] [Server thread/INFO]: Starting GS4 status listener
+2016-11-07 [15:56:09] [Server thread/INFO]: Setting query port to 19132
+2016-11-07 [15:56:09] [Server thread/INFO]: Query running on 0.0.0.0:19132
+2016-11-07 [15:56:09] [Server thread/INFO]: Default game type: Creative Mode
+2016-11-07 [15:56:09] [Server thread/INFO]: Done (0.506s)! For help, type "help" or "?"
+2016-11-07 [15:56:20] [Server thread/NOTICE]: Player data not found for "davidsyer", creating new profile
+2016-11-07 [15:56:20] [Server thread/INFO]: davidsyer[/192.168.1.127:19132] [ClientID: 1938675185566695589] logged in with entity id 1 at (world, 128.5, 70, 128.5)
+2016-11-07 [15:56:24] [Server thread/INFO]: davidsyer joined the game
+2016-11-07 [15:56:42] [Server thread/INFO]: davidsyer left the game
+2016-11-07 [15:56:42] [Server thread/INFO]: davidsyer[/192.168.1.127:19132] logged out due to client disconnect
+2016-11-07 [15:56:49] [Server thread/INFO]: Unloading level "world"
+2016-11-07 [15:56:50] [Server thread/INFO]: Unloading level "nether"
+2016-11-07 [15:56:50] [Server thread/INFO]: Stopping other threads
+2016-11-07 [16:08:27] [Server thread/WARNING]: SERVER IS RUNNING IN OFFLINE/INSECURE MODE!
+2016-11-07 [16:08:27] [Server thread/WARNING]: The server will make no attempt to authenticate usernames. Beware.
+2016-11-07 [16:08:27] [Server thread/WARNING]: While this makes the game possible to play without internet access, it also opens up the ability for hackers to connect with any username they choose.
+2016-11-07 [16:08:27] [Server thread/WARNING]: To change this, set "online-mode" to "true" in the server.properties file.
+2016-11-07 [16:08:27] [Server thread/INFO]: Selected English (eng) as the base language
+2016-11-07 [16:08:27] [Server thread/INFO]: Opening server on 0.0.0.0:19132
+2016-11-07 [16:08:27] [Server thread/INFO]: Genisys is distributed under the GPL License version 3 and later
+2016-11-07 [16:08:27] [Server thread/ERROR]: Could not load level "world": Invalid level.dat
+2016-11-07 [16:08:27] [Server thread/CRITICAL]: pocketmine\utils\LevelException: "Invalid level.dat" (EXCEPTION) in "/src/pocketmine/level/format/generic/BaseLevelProvider" at line 55
+2016-11-07 [16:08:27] [Server thread/EMERGENCY]: No default level has been loaded
+2016-11-07 [16:08:27] [Server thread/INFO]: Stopping other threads
+2016-11-07 [16:09:59] [Server thread/WARNING]: SERVER IS RUNNING IN OFFLINE/INSECURE MODE!
+2016-11-07 [16:09:59] [Server thread/WARNING]: The server will make no attempt to authenticate usernames. Beware.
+2016-11-07 [16:09:59] [Server thread/WARNING]: While this makes the game possible to play without internet access, it also opens up the ability for hackers to connect with any username they choose.
+2016-11-07 [16:09:59] [Server thread/WARNING]: To change this, set "online-mode" to "true" in the server.properties file.
+2016-11-07 [16:09:59] [Server thread/INFO]: Selected English (eng) as the base language
+2016-11-07 [16:09:59] [Server thread/INFO]: Opening server on 0.0.0.0:19132
+2016-11-07 [16:09:59] [Server thread/INFO]: Genisys is distributed under the GPL License version 3 and later
+2016-11-07 [16:10:00] [Server thread/NOTICE]: Level "world" not found
+2016-11-07 [16:10:00] [Server thread/INFO]: Preparing level "world"
+2016-11-07 [16:10:00] [Server thread/NOTICE]: Spawn terrain for level "world" is being generated in the background
+2016-11-07 [16:10:00] [Server thread/INFO]: Preparing level "nether"
+2016-11-07 [16:10:00] [Server thread/INFO]: Starting GS4 status listener
+2016-11-07 [16:10:00] [Server thread/INFO]: Setting query port to 19132
+2016-11-07 [16:10:00] [Server thread/INFO]: Query running on 0.0.0.0:19132
+2016-11-07 [16:10:00] [Server thread/INFO]: Default game type: Creative Mode
+2016-11-07 [16:10:00] [Server thread/INFO]: Done (0.768s)! For help, type "help" or "?"
+2016-11-07 [16:10:08] [Server thread/INFO]: davidsyer[/192.168.1.127:19132] [ClientID: 1938675185566695589] logged in with entity id 1 at (world, 128.5, 70, 128.5)
+2016-11-07 [16:10:09] [Server thread/INFO]: davidsyer joined the game
+2016-11-07 [16:11:51] [Server thread/INFO]: davidsyer left the game
+2016-11-07 [16:11:51] [Server thread/INFO]: davidsyer[/192.168.1.127:19132] logged out due to client disconnect
+2016-11-07 [16:12:59] [Server thread/INFO]: Unloading level "world"
+2016-11-07 [16:12:59] [Server thread/INFO]: Unloading level "nether"
+2016-11-07 [16:13:01] [Server thread/INFO]: Stopping other threads
+2016-11-07 [20:18:19] [Server thread/WARNING]: SERVER IS RUNNING IN OFFLINE/INSECURE MODE!
+2016-11-07 [20:18:19] [Server thread/WARNING]: The server will make no attempt to authenticate usernames. Beware.
+2016-11-07 [20:18:19] [Server thread/WARNING]: While this makes the game possible to play without internet access, it also opens up the ability for hackers to connect with any username they choose.
+2016-11-07 [20:18:19] [Server thread/WARNING]: To change this, set "online-mode" to "true" in the server.properties file.
+2016-11-07 [20:18:19] [Server thread/INFO]: Selected English (eng) as the base language
+2016-11-07 [20:18:19] [Server thread/INFO]: Opening server on 0.0.0.0:19132
+2016-11-07 [20:18:19] [Server thread/INFO]: Genisys is distributed under the GPL License version 3 and later
+2016-11-07 [20:18:19] [Server thread/INFO]: Preparing level "world"
+2016-11-07 [20:18:19] [Server thread/INFO]: Preparing level "nether"
+2016-11-07 [20:18:19] [Server thread/INFO]: Starting GS4 status listener
+2016-11-07 [20:18:19] [Server thread/INFO]: Setting query port to 19132
+2016-11-07 [20:18:19] [Server thread/INFO]: Query running on 0.0.0.0:19132
+2016-11-07 [20:18:20] [Server thread/INFO]: Default game type: Creative Mode
+2016-11-07 [20:18:20] [Server thread/INFO]: Done (0.728s)! For help, type "help" or "?"
+2016-11-07 [20:57:12] [Server thread/INFO]: davidsyer[/192.168.1.127:19132] [ClientID: 1938675185566695589] logged in with entity id 1 at (world, 263.6697, 79.903, -133.4847)
+2016-11-07 [20:57:14] [Server thread/INFO]: davidsyer joined the game
+2016-11-07 [20:58:13] [Server thread/INFO]: davidsyer left the game
+2016-11-07 [20:58:13] [Server thread/INFO]: davidsyer[/192.168.1.127:19132] logged out due to client disconnect
+2016-11-07 [21:17:54] [Server thread/INFO]: Unloading level "world"
+2016-11-07 [21:17:54] [Server thread/INFO]: Unloading level "nether"
+2016-11-07 [21:17:54] [Server thread/INFO]: Stopping other threads
+2016-11-07 [21:18:13] [Server thread/WARNING]: SERVER IS RUNNING IN OFFLINE/INSECURE MODE!
+2016-11-07 [21:18:13] [Server thread/WARNING]: The server will make no attempt to authenticate usernames. Beware.
+2016-11-07 [21:18:13] [Server thread/WARNING]: While this makes the game possible to play without internet access, it also opens up the ability for hackers to connect with any username they choose.
+2016-11-07 [21:18:13] [Server thread/WARNING]: To change this, set "online-mode" to "true" in the server.properties file.
+2016-11-07 [21:18:13] [Server thread/INFO]: Selected English (eng) as the base language
+2016-11-07 [21:18:13] [Server thread/INFO]: Opening server on 0.0.0.0:19132
+2016-11-07 [21:18:13] [Server thread/INFO]: Genisys is distributed under the GPL License version 3 and later
+2016-11-07 [21:18:14] [Server thread/INFO]: Preparing level "world"
+2016-11-07 [21:18:14] [Server thread/INFO]: Preparing level "nether"
+2016-11-07 [21:18:14] [Server thread/INFO]: Starting GS4 status listener
+2016-11-07 [21:18:14] [Server thread/INFO]: Setting query port to 19132
+2016-11-07 [21:18:14] [Server thread/INFO]: Query running on 0.0.0.0:19132
+2016-11-07 [21:18:14] [Server thread/INFO]: Default game type: Creative Mode
+2016-11-07 [21:18:14] [Server thread/INFO]: Done (0.495s)! For help, type "help" or "?"
+2016-11-07 [21:18:44] [Server thread/INFO]: davidsyer[/192.168.1.127:19132] [ClientID: 1938675185566695589] logged in with entity id 1 at (world, 128.5, 70, 128.5)
+2016-11-07 [21:18:46] [Server thread/INFO]: davidsyer joined the game
+2016-11-07 [21:26:56] [Server thread/INFO]: davidsyer left the game
+2016-11-07 [21:26:57] [Server thread/INFO]: davidsyer[/192.168.1.127:19132] logged out due to client disconnect
+2016-11-08 [08:11:17] [Server thread/INFO]: Unloading level "world"
+2016-11-08 [08:11:18] [Server thread/INFO]: Unloading level "nether"
+2016-11-08 [08:12:15] [Server thread/WARNING]: SERVER IS RUNNING IN OFFLINE/INSECURE MODE!
+2016-11-08 [08:12:15] [Server thread/WARNING]: The server will make no attempt to authenticate usernames. Beware.
+2016-11-08 [08:12:15] [Server thread/WARNING]: While this makes the game possible to play without internet access, it also opens up the ability for hackers to connect with any username they choose.
+2016-11-08 [08:12:15] [Server thread/WARNING]: To change this, set "online-mode" to "true" in the server.properties file.
+2016-11-08 [08:12:15] [Server thread/INFO]: Selected English (eng) as the base language
+2016-11-08 [08:12:15] [Server thread/INFO]: Opening server on 0.0.0.0:19132
+2016-11-08 [08:12:16] [Server thread/INFO]: Genisys is distributed under the GPL License version 3 and later
+2016-11-08 [08:12:17] [Server thread/INFO]: Preparing level "world"
+2016-11-08 [08:12:17] [Server thread/INFO]: Preparing level "nether"
+2016-11-08 [08:12:17] [Server thread/INFO]: Starting GS4 status listener
+2016-11-08 [08:12:17] [Server thread/INFO]: Setting query port to 19132
+2016-11-08 [08:12:17] [Server thread/INFO]: Query running on 0.0.0.0:19132
+2016-11-08 [08:12:17] [Server thread/INFO]: Default game type: Creative Mode
+2016-11-08 [08:12:17] [Server thread/INFO]: Done (2.085s)! For help, type "help" or "?"
+2016-11-08 [08:12:43] [Server thread/INFO]: davidsyer[/192.168.1.127:19132] [ClientID: 1938675185566695589] logged in with entity id 1 at (world, 128.5, 70, 128.5)
+2016-11-08 [08:12:44] [Server thread/INFO]: davidsyer joined the game
+2016-11-08 [08:13:22] [Server thread/INFO]: davidsyer left the game
+2016-11-08 [08:13:22] [Server thread/INFO]: davidsyer[/192.168.1.127:19132] logged out due to client disconnect
+2016-11-08 [08:13:29] [Server thread/INFO]: davidsyer[/192.168.1.127:19132] [ClientID: 1938675185566695589] logged in with entity id 2 at (world, 128.5, 70, 128.5)
+2016-11-08 [08:13:31] [Server thread/INFO]: davidsyer joined the game
+2016-11-08 [08:17:49] [Server thread/INFO]: davidsyer left the game
+2016-11-08 [08:17:49] [Server thread/INFO]: davidsyer[/192.168.1.127:19132] logged out due to client disconnect
+2016-11-08 [08:19:51] [Server thread/INFO]: Unloading level "world"
+2016-11-08 [08:19:51] [Server thread/INFO]: Unloading level "nether"
+2016-11-08 [08:19:53] [Server thread/INFO]: Stopping other threads
+2016-11-08 [08:20:22] [Server thread/WARNING]: SERVER IS RUNNING IN OFFLINE/INSECURE MODE!
+2016-11-08 [08:20:22] [Server thread/WARNING]: The server will make no attempt to authenticate usernames. Beware.
+2016-11-08 [08:20:22] [Server thread/WARNING]: While this makes the game possible to play without internet access, it also opens up the ability for hackers to connect with any username they choose.
+2016-11-08 [08:20:22] [Server thread/WARNING]: To change this, set "online-mode" to "true" in the server.properties file.
+2016-11-08 [08:20:22] [Server thread/INFO]: Selected English (eng) as the base language
+2016-11-08 [08:20:22] [Server thread/INFO]: Opening server on 0.0.0.0:19132
+2016-11-08 [08:20:22] [Server thread/INFO]: Genisys is distributed under the GPL License version 3 and later
+2016-11-08 [08:20:22] [Server thread/INFO]: Preparing level "world"
+2016-11-08 [08:20:22] [Server thread/INFO]: Preparing level "nether"
+2016-11-08 [08:20:23] [Server thread/INFO]: Starting GS4 status listener
+2016-11-08 [08:20:23] [Server thread/INFO]: Setting query port to 19132
+2016-11-08 [08:20:23] [Server thread/INFO]: Query running on 0.0.0.0:19132
+2016-11-08 [08:20:23] [Server thread/INFO]: Default game type: Creative Mode
+2016-11-08 [08:20:23] [Server thread/INFO]: Done (0.707s)! For help, type "help" or "?"
+2016-11-08 [08:21:18] [Server thread/INFO]: davidsyer[/192.168.1.127:19132] [ClientID: 1938675185566695589] logged in with entity id 1 at (world, 128.5, 70, 128.5)
+2016-11-08 [08:21:20] [Server thread/INFO]: davidsyer joined the game
+2016-11-08 [08:21:38] [Server thread/INFO]: davidsyer left the game
+2016-11-08 [08:21:38] [Server thread/INFO]: davidsyer[/192.168.1.127:19132] logged out due to client disconnect
+2016-11-08 [08:21:58] [Server thread/INFO]: Unloading level "world"
+2016-11-08 [08:21:58] [Server thread/INFO]: Unloading level "nether"
+2016-11-08 [08:21:59] [Server thread/INFO]: Stopping other threads
+2016-11-08 [08:22:08] [Server thread/WARNING]: SERVER IS RUNNING IN OFFLINE/INSECURE MODE!
+2016-11-08 [08:22:08] [Server thread/WARNING]: The server will make no attempt to authenticate usernames. Beware.
+2016-11-08 [08:22:08] [Server thread/WARNING]: While this makes the game possible to play without internet access, it also opens up the ability for hackers to connect with any username they choose.
+2016-11-08 [08:22:08] [Server thread/WARNING]: To change this, set "online-mode" to "true" in the server.properties file.
+2016-11-08 [08:22:08] [Server thread/INFO]: Selected English (eng) as the base language
+2016-11-08 [08:22:08] [Server thread/INFO]: Opening server on 0.0.0.0:19132
+2016-11-08 [08:22:08] [Server thread/INFO]: Genisys is distributed under the GPL License version 3 and later
+2016-11-08 [08:22:08] [Server thread/INFO]: Preparing level "world"
+2016-11-08 [08:22:08] [Server thread/INFO]: Preparing level "nether"
+2016-11-08 [08:22:08] [Server thread/INFO]: Starting GS4 status listener
+2016-11-08 [08:22:08] [Server thread/INFO]: Setting query port to 19132
+2016-11-08 [08:22:08] [Server thread/INFO]: Query running on 0.0.0.0:19132
+2016-11-08 [08:22:08] [Server thread/INFO]: Default game type: Creative Mode
+2016-11-08 [08:22:08] [Server thread/INFO]: Done (0.501s)! For help, type "help" or "?"
+2016-11-08 [08:22:15] [Server thread/INFO]: davidsyer[/192.168.1.127:19132] [ClientID: 1938675185566695589] logged in with entity id 1 at (world, 128.5, 70, 128.5)
+2016-11-08 [08:22:17] [Server thread/INFO]: davidsyer joined the game
+2016-11-08 [08:22:54] [Server thread/INFO]: davidsyer left the game
+2016-11-08 [08:22:54] [Server thread/INFO]: davidsyer[/192.168.1.127:19132] logged out due to client disconnect
+2016-11-08 [08:23:03] [Server thread/INFO]: davidsyer[/192.168.1.127:19132] [ClientID: 1938675185566695589] logged in with entity id 2 at (world, 128.5, 70, 128.5)
+2016-11-08 [08:23:03] [Server thread/INFO]: davidsyer joined the game
+2016-11-08 [08:23:17] [Server thread/INFO]: davidsyer left the game
+2016-11-08 [08:23:17] [Server thread/INFO]: davidsyer[/192.168.1.127:19132] logged out due to client disconnect
+2016-11-08 [16:02:51] [Server thread/INFO]: Unloading level "world"
+2016-11-08 [16:02:51] [Server thread/INFO]: Unloading level "nether"
+2016-11-08 [16:03:10] [Server thread/WARNING]: SERVER IS RUNNING IN OFFLINE/INSECURE MODE!
+2016-11-08 [16:03:10] [Server thread/WARNING]: The server will make no attempt to authenticate usernames. Beware.
+2016-11-08 [16:03:10] [Server thread/WARNING]: While this makes the game possible to play without internet access, it also opens up the ability for hackers to connect with any username they choose.
+2016-11-08 [16:03:10] [Server thread/WARNING]: To change this, set "online-mode" to "true" in the server.properties file.
+2016-11-08 [16:03:10] [Server thread/INFO]: Selected English (eng) as the base language
+2016-11-08 [16:03:10] [Server thread/INFO]: Opening server on 0.0.0.0:19132
+2016-11-08 [16:03:11] [Server thread/INFO]: Genisys is distributed under the GPL License version 3 and later
+2016-11-08 [16:03:11] [Server thread/INFO]: Preparing level "world"
+2016-11-08 [16:03:11] [Server thread/INFO]: Preparing level "nether"
+2016-11-08 [16:03:11] [Server thread/INFO]: Starting GS4 status listener
+2016-11-08 [16:03:11] [Server thread/INFO]: Setting query port to 19132
+2016-11-08 [16:03:11] [Server thread/INFO]: Query running on 0.0.0.0:19132
+2016-11-08 [16:03:11] [Server thread/INFO]: Default game type: Creative Mode
+2016-11-08 [16:03:11] [Server thread/INFO]: Done (0.766s)! For help, type "help" or "?"
+2016-11-08 [16:03:23] [Server thread/INFO]: davidsyer[/192.168.1.127:19132] [ClientID: 1938675185566695589] logged in with entity id 1 at (world, 128.5, 70, 128.5)
+2016-11-08 [16:03:24] [Server thread/INFO]: davidsyer joined the game
+2016-11-08 [16:04:30] [Server thread/INFO]: davidsyer left the game
+2016-11-08 [16:04:30] [Server thread/INFO]: davidsyer[/192.168.1.127:19132] logged out due to client disconnect
+2016-11-08 [16:04:39] [Server thread/INFO]: davidsyer[/192.168.1.127:19132] [ClientID: 1938675185566695589] logged in with entity id 2 at (world, 128.5, 70, 128.5)
+2016-11-08 [16:04:41] [Server thread/INFO]: davidsyer joined the game
+2016-11-08 [16:05:08] [Server thread/INFO]: davidsyer left the game
+2016-11-08 [16:05:08] [Server thread/INFO]: davidsyer[/192.168.1.127:19132] logged out due to client disconnect
+2016-11-08 [19:00:49] [Server thread/WARNING]: SERVER IS RUNNING IN OFFLINE/INSECURE MODE!
+2016-11-08 [19:00:49] [Server thread/WARNING]: The server will make no attempt to authenticate usernames. Beware.
+2016-11-08 [19:00:49] [Server thread/WARNING]: While this makes the game possible to play without internet access, it also opens up the ability for hackers to connect with any username they choose.
+2016-11-08 [19:00:49] [Server thread/WARNING]: To change this, set "online-mode" to "true" in the server.properties file.
+2016-11-08 [19:00:49] [Server thread/INFO]: Selected English (eng) as the base language
+2016-11-08 [19:00:49] [Server thread/INFO]: Opening server on 0.0.0.0:19132
+2016-11-08 [19:00:49] [Server thread/INFO]: Genisys is distributed under the GPL License version 3 and later
+2016-11-08 [19:00:50] [Server thread/INFO]: Preparing level "world"
+2016-11-08 [19:00:50] [Server thread/INFO]: Preparing level "nether"
+2016-11-08 [19:00:50] [Server thread/INFO]: Starting GS4 status listener
+2016-11-08 [19:00:50] [Server thread/INFO]: Setting query port to 19132
+2016-11-08 [19:00:50] [Server thread/INFO]: Query running on 0.0.0.0:19132
+2016-11-08 [19:00:50] [Server thread/INFO]: Default game type: Creative Mode
+2016-11-08 [19:00:50] [Server thread/INFO]: Done (0.619s)! For help, type "help" or "?"
+2016-11-08 [19:01:15] [Server thread/INFO]: davidsyer[/192.168.1.127:19132] [ClientID: 1938675185566695589] logged in with entity id 1 at (world, 128.5, 70, 128.5)
+2016-11-08 [19:01:17] [Server thread/INFO]: davidsyer joined the game
+2016-11-08 [19:02:03] [Server thread/INFO]: davidsyer left the game
+2016-11-08 [19:02:03] [Server thread/INFO]: davidsyer[/192.168.1.127:19132] logged out due to client disconnect
+2016-11-08 [19:02:16] [Server thread/INFO]: davidsyer[/192.168.1.127:19132] [ClientID: 1938675185566695589] logged in with entity id 2 at (world, 128.5, 70, 128.5)
+2016-11-08 [19:02:18] [Server thread/INFO]: davidsyer joined the game
+2016-11-08 [19:03:13] [Server thread/INFO]: davidsyer left the game
+2016-11-08 [19:03:13] [Server thread/INFO]: davidsyer[/192.168.1.127:19132] logged out due to timeout
+2016-11-13 [21:53:46] [Server thread/INFO]: Unloading level "world"
+2016-11-13 [21:53:49] [Server thread/INFO]: Unloading level "nether"
+2016-11-13 [21:56:12] [Server thread/WARNING]: SERVER IS RUNNING IN OFFLINE/INSECURE MODE!
+2016-11-13 [21:56:12] [Server thread/WARNING]: The server will make no attempt to authenticate usernames. Beware.
+2016-11-13 [21:56:12] [Server thread/WARNING]: While this makes the game possible to play without internet access, it also opens up the ability for hackers to connect with any username they choose.
+2016-11-13 [21:56:12] [Server thread/WARNING]: To change this, set "online-mode" to "true" in the server.properties file.
+2016-11-13 [21:56:12] [Server thread/INFO]: Selected English (eng) as the base language
+2016-11-13 [21:56:12] [Server thread/INFO]: Opening server on 0.0.0.0:19132
+2016-11-13 [21:56:12] [Server thread/INFO]: Genisys is distributed under the GPL License version 3 and later
+2016-11-13 [21:56:13] [Server thread/INFO]: Preparing level "world"
+2016-11-13 [21:56:13] [Server thread/INFO]: Preparing level "nether"
+2016-11-13 [21:56:13] [Server thread/INFO]: Starting GS4 status listener
+2016-11-13 [21:56:13] [Server thread/INFO]: Setting query port to 19132
+2016-11-13 [21:56:13] [Server thread/INFO]: Query running on 0.0.0.0:19132
+2016-11-13 [21:56:13] [Server thread/INFO]: Default game type: Creative Mode
+2016-11-13 [21:56:13] [Server thread/INFO]: Done (0.943s)! For help, type "help" or "?"
+2016-11-13 [21:57:05] [Server thread/INFO]: davidsyer[/192.168.1.127:19132] [ClientID: 1938675185566695589] logged in with entity id 1 at (world, 128.5, 70, 128.5)
+2016-11-13 [21:57:05] [Server thread/INFO]: davidsyer joined the game
+2016-11-13 [21:57:56] [Server thread/INFO]: davidsyer left the game
+2016-11-13 [21:57:56] [Server thread/INFO]: davidsyer[/192.168.1.127:19132] logged out due to client disconnect
+2016-11-13 [21:59:16] [Server thread/INFO]: davidsyer[/192.168.1.127:19132] [ClientID: 1938675185566695589] logged in with entity id 2 at (world, 128.5, 70, 128.5)
+2016-11-13 [21:59:17] [Server thread/INFO]: davidsyer joined the game
+2016-11-13 [22:01:43] [Server thread/INFO]: davidsyer left the game
+2016-11-13 [22:01:43] [Server thread/INFO]: davidsyer[/192.168.1.127:19132] logged out due to client disconnect
+2016-11-13 [22:01:53] [Server thread/INFO]: davidsyer[/192.168.1.127:19132] [ClientID: 1938675185566695589] logged in with entity id 3 at (world, 128.5, 70, 128.5)
+2016-11-13 [22:01:53] [Server thread/INFO]: davidsyer joined the game
+2016-11-13 [22:03:16] [Server thread/INFO]: davidsyer left the game
+2016-11-13 [22:03:16] [Server thread/INFO]: davidsyer[/192.168.1.127:19132] logged out due to client disconnect
+2016-11-13 [22:04:51] [Server thread/INFO]: davidsyer[/192.168.1.127:19132] [ClientID: 1938675185566695589] logged in with entity id 4 at (world, 128.5, 70, 128.5)
+2016-11-13 [22:04:52] [Server thread/INFO]: davidsyer joined the game
+2016-11-13 [22:05:22] [Server thread/INFO]: davidsyer left the game
+2016-11-13 [22:05:22] [Server thread/INFO]: davidsyer[/192.168.1.127:19132] logged out due to client disconnect
+2016-11-13 [22:30:03] [Server thread/INFO]: davidsyer[/192.168.1.127:19132] [ClientID: 1938675185566695589] logged in with entity id 5 at (world, 128.5, 70, 128.5)
+2016-11-13 [22:30:03] [Server thread/INFO]: davidsyer joined the game
+2016-11-13 [22:30:58] [Server thread/INFO]: davidsyer left the game
+2016-11-13 [22:30:58] [Server thread/INFO]: davidsyer[/192.168.1.127:19132] logged out due to client disconnect
+2016-11-13 [22:31:07] [Server thread/INFO]: davidsyer[/192.168.1.127:19132] [ClientID: 1938675185566695589] logged in with entity id 6 at (world, 128.5, 70, 128.5)
+2016-11-13 [22:31:08] [Server thread/INFO]: davidsyer joined the game
+2016-11-13 [22:31:30] [Server thread/INFO]: davidsyer left the game
+2016-11-13 [22:31:30] [Server thread/INFO]: davidsyer[/192.168.1.127:19132] logged out due to client disconnect
+2016-11-14 [14:27:16] [Server thread/INFO]: Unloading level "world"
+2016-11-14 [14:27:19] [Server thread/INFO]: Unloading level "nether"
+2016-11-14 [14:27:41] [Server thread/WARNING]: SERVER IS RUNNING IN OFFLINE/INSECURE MODE!
+2016-11-14 [14:27:41] [Server thread/WARNING]: The server will make no attempt to authenticate usernames. Beware.
+2016-11-14 [14:27:41] [Server thread/WARNING]: While this makes the game possible to play without internet access, it also opens up the ability for hackers to connect with any username they choose.
+2016-11-14 [14:27:41] [Server thread/WARNING]: To change this, set "online-mode" to "true" in the server.properties file.
+2016-11-14 [14:27:41] [Server thread/INFO]: Selected English (eng) as the base language
+2016-11-14 [14:27:41] [Server thread/INFO]: Opening server on 0.0.0.0:19132
+2016-11-14 [14:27:41] [Server thread/INFO]: Genisys is distributed under the GPL License version 3 and later
+2016-11-14 [14:27:41] [Server thread/INFO]: Preparing level "world"
+2016-11-14 [14:27:41] [Server thread/INFO]: Preparing level "nether"
+2016-11-14 [14:27:41] [Server thread/INFO]: Starting GS4 status listener
+2016-11-14 [14:27:41] [Server thread/INFO]: Setting query port to 19132
+2016-11-14 [14:27:41] [Server thread/INFO]: Query running on 0.0.0.0:19132
+2016-11-14 [14:27:41] [Server thread/INFO]: Default game type: Creative Mode
+2016-11-14 [14:27:41] [Server thread/INFO]: Done (0.772s)! For help, type "help" or "?"
+2016-11-14 [14:27:52] [Server thread/INFO]: davidsyer[/192.168.1.127:19132] [ClientID: 1938675185566695589] logged in with entity id 1 at (world, 128.5, 70, 128.5)
+2016-11-14 [14:27:52] [Server thread/INFO]: davidsyer joined the game
+2016-11-14 [14:28:40] [Server thread/INFO]: davidsyer left the game
+2016-11-14 [14:28:40] [Server thread/INFO]: davidsyer[/192.168.1.127:19132] logged out due to client disconnect
+2016-11-14 [14:35:54] [Server thread/INFO]: Unloading level "world"
+2016-11-14 [14:35:54] [Server thread/INFO]: Unloading level "nether"
+2016-11-14 [14:35:54] [Server thread/INFO]: Stopping other threads
+2016-11-14 [14:36:02] [Server thread/WARNING]: SERVER IS RUNNING IN OFFLINE/INSECURE MODE!
+2016-11-14 [14:36:02] [Server thread/WARNING]: The server will make no attempt to authenticate usernames. Beware.
+2016-11-14 [14:36:02] [Server thread/WARNING]: While this makes the game possible to play without internet access, it also opens up the ability for hackers to connect with any username they choose.
+2016-11-14 [14:36:02] [Server thread/WARNING]: To change this, set "online-mode" to "true" in the server.properties file.
+2016-11-14 [14:36:02] [Server thread/INFO]: Selected English (eng) as the base language
+2016-11-14 [14:36:02] [Server thread/INFO]: Opening server on 0.0.0.0:19132
+2016-11-14 [14:36:02] [Server thread/INFO]: Genisys is distributed under the GPL License version 3 and later
+2016-11-14 [14:36:03] [Server thread/INFO]: Preparing level "world"
+2016-11-14 [14:36:03] [Server thread/INFO]: Preparing level "nether"
+2016-11-14 [14:36:03] [Server thread/INFO]: Starting GS4 status listener
+2016-11-14 [14:36:03] [Server thread/INFO]: Setting query port to 19132
+2016-11-14 [14:36:03] [Server thread/INFO]: Query running on 0.0.0.0:19132
+2016-11-14 [14:36:03] [Server thread/INFO]: Default game type: Creative Mode
+2016-11-14 [14:36:03] [Server thread/INFO]: Done (0.466s)! For help, type "help" or "?"
+2016-11-14 [14:36:11] [Server thread/INFO]: davidsyer[/192.168.1.127:19132] [ClientID: 1938675185566695589] logged in with entity id 1 at (world, 128.5, 70, 128.5)
+2016-11-14 [14:36:11] [Server thread/INFO]: davidsyer joined the game
+2016-11-14 [14:36:55] [Server thread/INFO]: davidsyer left the game
+2016-11-14 [14:36:55] [Server thread/INFO]: davidsyer[/192.168.1.127:19132] logged out due to client disconnect
+2016-11-14 [14:38:43] [Server thread/INFO]: Unloading level "world"
+2016-11-14 [14:38:43] [Server thread/INFO]: Unloading level "nether"
+2016-11-14 [14:38:43] [Server thread/INFO]: Stopping other threads
+2016-11-14 [14:38:51] [Server thread/WARNING]: SERVER IS RUNNING IN OFFLINE/INSECURE MODE!
+2016-11-14 [14:38:51] [Server thread/WARNING]: The server will make no attempt to authenticate usernames. Beware.
+2016-11-14 [14:38:51] [Server thread/WARNING]: While this makes the game possible to play without internet access, it also opens up the ability for hackers to connect with any username they choose.
+2016-11-14 [14:38:51] [Server thread/WARNING]: To change this, set "online-mode" to "true" in the server.properties file.
+2016-11-14 [14:38:51] [Server thread/INFO]: Selected English (eng) as the base language
+2016-11-14 [14:38:51] [Server thread/INFO]: Opening server on 0.0.0.0:19132
+2016-11-14 [14:38:51] [Server thread/INFO]: Genisys is distributed under the GPL License version 3 and later
+2016-11-14 [14:38:51] [Server thread/INFO]: Preparing level "world"
+2016-11-14 [14:38:51] [Server thread/INFO]: Preparing level "nether"
+2016-11-14 [14:38:52] [Server thread/INFO]: Starting GS4 status listener
+2016-11-14 [14:38:52] [Server thread/INFO]: Setting query port to 19132
+2016-11-14 [14:38:52] [Server thread/INFO]: Query running on 0.0.0.0:19132
+2016-11-14 [14:38:52] [Server thread/INFO]: Default game type: Creative Mode
+2016-11-14 [14:38:52] [Server thread/INFO]: Done (0.488s)! For help, type "help" or "?"
+2016-11-14 [14:39:00] [Server thread/INFO]: davidsyer[/192.168.1.127:19132] [ClientID: 1938675185566695589] logged in with entity id 1 at (world, 128.5, 70, 128.5)
+2016-11-14 [14:39:01] [Server thread/INFO]: davidsyer joined the game
+2016-11-14 [14:41:00] [Server thread/INFO]: davidsyer left the game
+2016-11-14 [14:41:00] [Server thread/INFO]: davidsyer[/192.168.1.127:19132] logged out due to Server closed
+2016-11-14 [14:41:00] [Server thread/INFO]: Unloading level "world"
+2016-11-14 [14:41:00] [Server thread/INFO]: Unloading level "nether"
+2016-11-14 [14:41:00] [Server thread/INFO]: Stopping other threads
+2016-11-14 [14:41:33] [Server thread/WARNING]: SERVER IS RUNNING IN OFFLINE/INSECURE MODE!
+2016-11-14 [14:41:33] [Server thread/WARNING]: The server will make no attempt to authenticate usernames. Beware.
+2016-11-14 [14:41:33] [Server thread/WARNING]: While this makes the game possible to play without internet access, it also opens up the ability for hackers to connect with any username they choose.
+2016-11-14 [14:41:33] [Server thread/WARNING]: To change this, set "online-mode" to "true" in the server.properties file.
+2016-11-14 [14:41:33] [Server thread/INFO]: Selected English (eng) as the base language
+2016-11-14 [14:41:33] [Server thread/INFO]: Opening server on 0.0.0.0:19132
+2016-11-14 [14:41:33] [Server thread/INFO]: Genisys is distributed under the GPL License version 3 and later
+2016-11-14 [14:41:34] [Server thread/INFO]: Preparing level "world"
+2016-11-14 [14:41:34] [Server thread/INFO]: Preparing level "world"
+2016-11-14 [14:41:34] [Server thread/INFO]: Preparing level "nether"
+2016-11-14 [14:41:34] [Server thread/INFO]: Starting GS4 status listener
+2016-11-14 [14:41:34] [Server thread/INFO]: Setting query port to 19132
+2016-11-14 [14:41:34] [Server thread/INFO]: Query running on 0.0.0.0:19132
+2016-11-14 [14:41:34] [Server thread/INFO]: Default game type: Creative Mode
+2016-11-14 [14:41:34] [Server thread/INFO]: Done (0.572s)! For help, type "help" or "?"
+2016-11-14 [14:41:56] [Server thread/INFO]: davidsyer[/192.168.1.127:19132] [ClientID: 1938675185566695589] logged in with entity id 1 at (world, 128.5, 79.929, 128.5)
+2016-11-14 [14:41:57] [Server thread/INFO]: davidsyer joined the game
+2016-11-14 [14:53:56] [Server thread/INFO]: davidsyer left the game
+2016-11-14 [14:53:56] [Server thread/INFO]: davidsyer[/192.168.1.127:19132] logged out due to client disconnect
+2016-11-14 [14:55:32] [Server thread/INFO]: davidsyer[/192.168.1.127:19132] [ClientID: 1938675185566695589] logged in with entity id 2 at (world, 119.4455, 63, 142.5013)
+2016-11-14 [14:55:32] [Server thread/INFO]: davidsyer joined the game
+2016-11-14 [14:55:36] [Server thread/INFO]: davidsyer left the game
+2016-11-14 [14:55:36] [Server thread/INFO]: davidsyer[/192.168.1.127:19132] logged out due to client disconnect
+2016-11-14 [14:55:43] [Server thread/INFO]: Unloading level "world"
+2016-11-14 [14:55:43] [Server thread/INFO]: Unloading level "world"
+2016-11-14 [14:55:43] [Server thread/INFO]: Unloading level "nether"
+2016-11-14 [14:55:44] [Server thread/INFO]: Stopping other threads
+2016-11-14 [14:55:49] [Server thread/WARNING]: SERVER IS RUNNING IN OFFLINE/INSECURE MODE!
+2016-11-14 [14:55:49] [Server thread/WARNING]: The server will make no attempt to authenticate usernames. Beware.
+2016-11-14 [14:55:49] [Server thread/WARNING]: While this makes the game possible to play without internet access, it also opens up the ability for hackers to connect with any username they choose.
+2016-11-14 [14:55:49] [Server thread/WARNING]: To change this, set "online-mode" to "true" in the server.properties file.
+2016-11-14 [14:55:49] [Server thread/INFO]: Selected English (eng) as the base language
+2016-11-14 [14:55:49] [Server thread/INFO]: Opening server on 0.0.0.0:19132
+2016-11-14 [14:55:49] [Server thread/INFO]: Genisys is distributed under the GPL License version 3 and later
+2016-11-14 [14:55:50] [Server thread/INFO]: Preparing level "world"
+2016-11-14 [14:55:50] [Server thread/INFO]: Preparing level "nether"
+2016-11-14 [14:55:50] [Server thread/INFO]: Starting GS4 status listener
+2016-11-14 [14:55:50] [Server thread/INFO]: Setting query port to 19132
+2016-11-14 [14:55:50] [Server thread/INFO]: Query running on 0.0.0.0:19132
+2016-11-14 [14:55:50] [Server thread/INFO]: Default game type: Creative Mode
+2016-11-14 [14:55:50] [Server thread/INFO]: Done (0.474s)! For help, type "help" or "?"
+2016-11-14 [14:56:00] [Server thread/INFO]: davidsyer[/192.168.1.127:19132] [ClientID: 1938675185566695589] logged in with entity id 1 at (world, 128.5, 70, 128.5)
+2016-11-14 [14:56:01] [Server thread/INFO]: davidsyer joined the game
+2016-11-14 [15:16:06] [Server thread/INFO]: davidsyer left the game
+2016-11-14 [15:16:06] [Server thread/INFO]: davidsyer[/192.168.1.127:19132] logged out due to client disconnect
+2016-11-14 [15:17:02] [Server thread/INFO]: davidsyer[/192.168.1.127:19132] [ClientID: 1938675185566695589] logged in with entity id 7 at (world, 128.5, 70, 128.5)
+2016-11-14 [15:17:02] [Server thread/INFO]: davidsyer joined the game
+2016-11-14 [15:17:58] [Server thread/INFO]: davidsyer left the game
+2016-11-14 [15:17:58] [Server thread/INFO]: davidsyer[/192.168.1.127:19132] logged out due to client disconnect
+2016-11-14 [15:28:40] [Server thread/INFO]: Unloading level "world"
+2016-11-14 [15:28:40] [Server thread/INFO]: Unloading level "nether"
+2016-11-14 [15:28:41] [Server thread/INFO]: Stopping other threads
+2016-11-14 [15:28:47] [Server thread/INFO]: 
+
+	Genisys is a custom version of PocketMine-MP, modified by iTX Technologies LLC
+	Version: 017fa6f
+	Target client version: v0.16.0.5 alpha
+	Source code: https://github.com/iTXTech/Genisys
+	
+2016-11-14 [15:28:47] [Server thread/INFO]: Loading properties and configuration...
+2016-11-14 [15:28:47] [Server thread/WARNING]: SERVER IS RUNNING IN OFFLINE/INSECURE MODE!
+2016-11-14 [15:28:47] [Server thread/WARNING]: The server will make no attempt to authenticate usernames. Beware.
+2016-11-14 [15:28:47] [Server thread/WARNING]: While this makes the game possible to play without internet access, it also opens up the ability for hackers to connect with any username they choose.
+2016-11-14 [15:28:47] [Server thread/WARNING]: To change this, set "online-mode" to "true" in the server.properties file.
+2016-11-14 [15:28:47] [Server thread/INFO]: Selected English (eng) as the base language
+2016-11-14 [15:28:47] [Server thread/INFO]: Opening server on 0.0.0.0:19132
+2016-11-14 [15:28:47] [Server thread/INFO]: Genisys is distributed under the GPL License version 3 and later
+2016-11-14 [15:28:47] [Server thread/INFO]: Preparing level "world"
+2016-11-14 [15:28:47] [Server thread/INFO]: Starting GS4 status listener
+2016-11-14 [15:28:47] [Server thread/INFO]: Setting query port to 19132
+2016-11-14 [15:28:47] [Server thread/INFO]: Query running on 0.0.0.0:19132
+2016-11-14 [15:28:47] [Server thread/INFO]: Default game type: Creative Mode
+2016-11-14 [15:28:47] [Server thread/INFO]: Done (0.992s)! For help, type "help" or "?"
+2016-11-14 [15:28:53] [Server thread/INFO]: davidsyer[/192.168.1.127:19132] [ClientID: 1938675185566695589] logged in with entity id 1 at (world, 128.5, 70, 128.5)
+2016-11-14 [15:28:53] [Server thread/INFO]: davidsyer joined the game
+2016-11-14 [15:31:33] [Server thread/INFO]: davidsyer left the game
+2016-11-14 [15:31:33] [Server thread/INFO]: davidsyer[/192.168.1.127:19132] logged out due to client disconnect
+2016-11-28 [07:20:25] [Server thread/NOTICE]: Player data not found for "izziedyer", creating new profile
+2016-11-28 [07:20:29] [Server thread/INFO]: izziedyer[/192.168.1.49:19132] [ClientID: -8270447736008105263] logged in with entity id 2 at (world, 128.5, 70, 128.5)
+2016-11-28 [07:20:35] [Server thread/INFO]: izziedyer joined the game
+2016-11-28 [07:20:55] [Server thread/INFO]: izziedyer left the game
+2016-11-28 [07:20:55] [Server thread/INFO]: izziedyer[/192.168.1.49:19132] logged out due to client disconnect
+2016-11-28 [07:22:06] [Server thread/INFO]: izziedyer[/192.168.1.49:19132] [ClientID: -8270447736008105263] logged in with entity id 3 at (world, 128.5, 70, 128.5)
+2016-11-28 [07:22:06] [Server thread/INFO]: izziedyer joined the game
+2016-11-28 [07:22:38] [Server thread/INFO]: izziedyer left the game
+2016-11-28 [07:22:38] [Server thread/INFO]: izziedyer[/192.168.1.49:19132] logged out due to client disconnect
+2016-11-29 [15:50:46] [Server thread/INFO]: Unloading level "world"
+2016-11-29 [15:50:52] [Server thread/INFO]: Stopping other threads
