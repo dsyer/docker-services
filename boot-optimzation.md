@@ -12,7 +12,7 @@ ENTRYPOINT [ "sh", "-c", "java $JAVA_OPTS -Djava.security.egd=file:/dev/./urando
 After:
 
 ```
-FROM frolvlad/alpine-oraclejdk8:slim
+FROM openjdk:8-jdk-alpine
 VOLUME /tmp
 COPY target/dependency/org /app/org
 COPY target/dependency/BOOT-INF/lib /app/BOOT-INF/lib
@@ -27,28 +27,31 @@ Total image size:
 ```
 $ docker images
 REPOSITORY                       TAG                 IMAGE ID            CREATED              SIZE
-springio/gs-spring-boot-docker   latest              0e0d38c39831        About a minute ago   181 MB
+springio/gs-spring-boot-docker   latest              9f32f28005b1        About a minute ago   116 MB
 ...
 ```
 
 Layers:
 
 ```
-$ docker history 0e0d38c39831
+$ docker history 9f32f28005b1
 IMAGE               CREATED             CREATED BY                                      SIZE                COMMENT
-0e0d38c39831        2 minutes ago       /bin/sh -c #(nop)  ENTRYPOINT ["sh" "-c" "...   0 B                 
-d57917bd7aff        2 minutes ago       /bin/sh -c #(nop)  ENV JAVA_OPTS=               0 B                 
-a8987b3017f8        2 minutes ago       /bin/sh -c #(nop) COPY dir:7bc47c34520ba72...   1.21 kB             
-c988583722b4        2 minutes ago       /bin/sh -c #(nop) COPY dir:bd0a383824455f5...   3.44 kB             
-47939601c1d8        2 minutes ago       /bin/sh -c #(nop) COPY dir:d919406b41ce5c5...   14.3 MB             
-c1e1c6fc5996        4 minutes ago       /bin/sh -c #(nop) COPY dir:d379e807617f72a...   166 kB              
-8d80942de1a6        About an hour ago   /bin/sh -c #(nop)  VOLUME [/tmp]                0 B                 
-c887553bc35c        2 weeks ago         /bin/sh -c apk add --no-cache --virtual=bu...   156 MB              
-<missing>           2 weeks ago         /bin/sh -c #(nop)  ENV JAVA_VERSION=8 JAVA...   0 B                 
-<missing>           2 weeks ago         /bin/sh -c #(nop)  ENV LANG=C.UTF-8             0 B                 
-<missing>           2 weeks ago         /bin/sh -c ALPINE_GLIBC_BASE_URL="https://...   6.7 MB              
-<missing>           2 weeks ago         /bin/sh -c #(nop)  CMD ["/bin/sh"]              0 B                 
-<missing>           2 weeks ago         /bin/sh -c #(nop) ADD file:4583e12bf5caec4...   3.97 MB  
+9f32f28005b1        40 seconds ago       /bin/sh -c #(nop)  ENTRYPOINT ["sh" "-c" "...   0B                  
+ce194570289b        About a minute ago   /bin/sh -c #(nop)  ENV JAVA_OPTS=               0B                  
+70eae1c9d52f        About a minute ago   /bin/sh -c #(nop) COPY dir:a520ff470215f49...   1.21kB              
+79f144a062c9        About a minute ago   /bin/sh -c #(nop) COPY dir:d5c9651b5a20e12...   3.67kB              
+2447c7451dc6        About a minute ago   /bin/sh -c #(nop) COPY dir:6a6a881628c4ecc...   14.4MB              
+72dbfce8a4c6        About a minute ago   /bin/sh -c #(nop) COPY dir:09e0d83963b61ee...   166kB               
+d4912fde9c7f        4 weeks ago          /bin/sh -c #(nop)  VOLUME [/tmp]                0B                  
+478bf389b75b        4 weeks ago          /bin/sh -c set -x  && apk add --no-cache  ...   97.1MB              
+<missing>           4 weeks ago          /bin/sh -c #(nop)  ENV JAVA_ALPINE_VERSION...   0B                  
+<missing>           4 weeks ago          /bin/sh -c #(nop)  ENV JAVA_VERSION=8u131       0B                  
+<missing>           4 weeks ago          /bin/sh -c #(nop)  ENV PATH=/usr/local/sbi...   0B                  
+<missing>           4 weeks ago          /bin/sh -c #(nop)  ENV JAVA_HOME=/usr/lib/...   0B                  
+<missing>           4 weeks ago          /bin/sh -c {   echo '#!/bin/sh';   echo 's...   87B                 
+<missing>           4 weeks ago          /bin/sh -c #(nop)  ENV LANG=C.UTF-8             0B                  
+<missing>           5 weeks ago          /bin/sh -c #(nop)  CMD ["/bin/sh"]              0B                  
+<missing>           5 weeks ago          /bin/sh -c #(nop) ADD file:4583e12bf5caec4...   3.97MB              
 ```
 
 Note the "fixed" layers are about 14MB and the "variable" layer is 4.65KB.
