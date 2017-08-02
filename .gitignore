@@ -3,6 +3,7 @@
 *#
 target
 bin
+.vagrant
 log/
 /data
 .DS_Store
