@@ -39,6 +39,14 @@ $ docker rmi $(docker images -f dangling=true -q)
 $ docker volume rm $(docker volume ls -f dangling=true -q)
 ```
 
+Run as current user:
+
+```
+$ docker run -ti -v ${HOME}:${HOME} -e HOME --user $(id -u):$(id -g) ubuntu /bin/bash
+/$ cd
+~$
+```
+
 ## Docker in Docker
 
 ```
@@ -239,7 +247,7 @@ Create an isolated network:
 $ docker network create --driver=bridge --internal=true isolated
 $ docker run --net=isolated -it tutum/curl
 # curl google.com
-... times out
+ ... times out
 ```
 
 Run a Maven build in an isolated container:
@@ -303,3 +311,40 @@ ENTRYPOINT ["java","-Xmx128m","-Djava.security.egd=file:/dev/./urandom","-XX:Tie
 
 Issue is that the `/root/.m2` volume is not the same between builds, so there is no cache.
 
+## Quick Bootstrap Kubernetes Service
+
+Create container and deployment:
+
+```
+$ docker build -t gcr.io/cf-sandbox-dsyer/demo .
+$ mkdir k8s
+$ kubectl create deployment demo --image=gcr.io/cf-sandbox-dsyer/demo --dry-run -o=yaml > k8s/deployment.yaml
+$ echo --- > k8s/deployment.yaml
+$ kubectl create service clusterip demo --tcp=8080:8080 --dry-run -o=yaml >> k8s/deployment.yaml
+... edit YAML to taste
+$ kubectl apply -f k8s/deployment.yaml
+$ kubectl port-forward svc/demo 8080:8080
+$ curl localhost:8080
+Hello World!
+```
+
+## Quick and Dirty Ingress
+
+Simple port forwarding for localhost:
+
+```
+$ kubectl create service clusterip demo --tcp=8080:8080
+$ $ kubectl port-forward svc/demo 8080:8080
+$ curl localhost:8080
+Hello World!
+```
+
+Public ingress via `ngrok`:
+
+```
+$ kubectl run --restart=Never -t -i --rm ngrok --image=gcr.io/kuar-demo/ngrok -- http demo:8080
+```
+
+`ngrok` starts and announces a public http and https service that connects to your "demo" service.
+
+## 

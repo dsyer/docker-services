@@ -1,0 +1,428 @@
+:toc:
+
+## Setting Up a Kubernetes Cluster
+
+There are many choices for how to run kubernetes. One of the simplest and least resource intensive is to use the `k3d` tool from https://github.com/rancher/k3d[Rancher], which runs a really slim cluster in a docker image.
+
+```
+ $ k3d create
+INFO[0000] Created cluster network with ID a89842a7f05a2e3fc539fff30db6bb17fed010889f08aa87dec895c3324c191c 
+...
+INFO[0030] SUCCESS: created cluster [k3s-default]       
+INFO[0030] You can now use the cluster with:
+
+export KUBECONFIG="$(k3d get-kubeconfig --name='k3s-default')"
+kubectl cluster-info 
+```
+
+You can use that `KUBECONFIG` environment variable per the suggestion, and lose the context if you switch terminals. Or you can merge the k3d cluster config with your existing config:
+
+```
+$ KUBECONFIG="$(k3d get-kubeconfig)":~/.kube/config kubectl config view --merge --flatten > config.yaml
+$ mv config.yaml ~/.kube/config
+```
+
+Then just use the "default" context:
+
+```
+$ kubectl config use-context default
+Switched to context "default".
+$ kubectl get all
+NAME                 TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE
+service/kubernetes   ClusterIP   10.43.0.1    <none>        443/TCP   7m13s
+```
+
+Most of what follows would work just fine if you create your cluster in some other way (e.g. on GCP or AWS). There are also other options for local clusters, like https://github.com/kubernetes/minikube[Minikube] or https://github.com/kubernetes-sigs/kind[Kind].
+
+## Build and Containerize a Spring Boot Application
+
+Create a new application using https://start.spring.io or re-use an existing one. We will assume that you have an app that listens on port 8080 and has an HTTP endpoint, e.g.
+
+[source,java]
+----
+@SpringBootApplication
+@RestController
+public class DemoApplication {
+
+	@GetMapping("/")
+	public String home() {
+		return "Hello World!";
+	}
+
+	public static void main(String[] args) {
+		SpringApplication.run(DemoApplication.class, args);
+	}
+
+}
+----
+
+Build and push a docker image from your app. For example, using Maven or Gradle, you can quickly create an image using the `jib` plugin. From Maven:
+
+```
+$ ./mvnw com.google.cloud.tools:jib-maven-plugin:build -Dimage=myorg/demo
+```
+
+This command creates an image and pushes it to https://hub.docker.com[Dockerhub] at `myorg/demo` (so your local docker config has to have permission to push to `myorg`). Any way you can get a docker image into a registry will work, but remember that the kubernetes cluster will need to be able to pull the images, so a public registry is easiest to work with.
+
+## Quickstart With Kubernetes
+
+A nice quick way to deploy the application to kubernetes is to generate a YAML descriptor using `kubectl --dry-run`. We need a deployment and a service:
+
+```
+$ kubectl create deployment demo --image=myorg/demo --dry-run -o=yaml > deployment.yaml
+$ echo --- > deployment.yaml
+$ kubectl create service clusterip demo --tcp=8080:8080 --dry-run -o=yaml >> deployment.yaml
+```
+
+You can edit the YAML at this point if you need to (e.g. you can remove the redundant status and created date entries). Or you can just apply it, as it is:
+
+```
+$ kubectl apply -f deployment.yaml
+```
+
+You can check that the app is running:
+
+```
+$ kubectl get all
+NAME                               READY     STATUS      RESTARTS   AGE
+pod/demo-658b7f4997-qfw9l        1/1       Running     0          146m
+
+NAME                 TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
+service/kubernetes   ClusterIP   10.43.0.1       <none>        443/TCP    2d18h
+service/demo         ClusterIP   10.43.138.213   <none>        8080/TCP   21h
+
+NAME                     READY     UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/demo   1/1       1            1           21h
+
+NAME                                DESIRED   CURRENT   READY     AGE
+replicaset.apps/demo-658b7f4997   1         1         1         21h
+d
+```
+
+There is a deployment and a service, per the YAML we created above. The deployment has spawned a replicaset and a pod, which is running.
+
+The application will have logged a normal Spring Boot startup to its console on the pod listed above. E.g.
+
+```
+$ kubctl logs demo-658b7f4997-qfw9l
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::        (v2.2.0.RELEASE)
+
+2019-10-18 08:52:37.932  WARN 1 --- [           main] pertySourceApplicationContextInitializer : Skipping 'cloud' property source addition because not in a cloud
+2019-10-18 08:52:37.935  WARN 1 --- [           main] nfigurationApplicationContextInitializer : Skipping reconfiguration because not in a cloud
+2019-10-18 08:52:37.943  INFO 1 --- [           main] com.example.demo.DemoApplication         : Starting DemoApplication on 66675bec6ec8 with PID 1 (/workspace/BOOT-INF/classes started by cnb in /workspace)
+2019-10-18 08:52:37.943  INFO 1 --- [           main] com.example.demo.DemoApplication         : No active profile set, falling back to default profiles: default
+2019-10-18 08:52:38.917  INFO 1 --- [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 2 endpoint(s) beneath base path '/actuator'
+2019-10-18 08:52:39.283  INFO 1 --- [           main] o.s.b.web.embedded.netty.NettyWebServer  : Netty started on port(s): 8080
+2019-10-18 08:52:39.287  INFO 1 --- [           main] com.example.demo.DemoApplication         : Started DemoApplication in 1.638 seconds (JVM running for 2.087)
+
+```
+
+The service was created with type `ClusterIP` so it is only accessible from within the cluster. Once the app is running you can use `kubectl` to punch through to the service and check that the endpoint is working:
+
+```
+$ kubectl port-forward svc/demo 8080:8080
+$ curl localhost:8080
+Hello World!
+```
+
+### Quick and Dirty Ingress with Ngrok
+
+If you use `kubectl port-forward` to create an SSH tunnel to the service you can only access it from localhost. If, instead, you want to share the app on the internet or LAN, you can get something up and running really quickly with `ngrok`. Example:
+
+```
+kubectl run --restart=Never -t -i --rm ngrok --image=gcr.io/kuar-demo/ngrok -- http demo:8080
+```
+
+When `ngrok` starts it announces on the console a public http and https service that connects to your "demo" service.
+
+NOTE: A global tunnel on `ngrok` is certainly not recommended for production apps, but is quite handy at development time.
+
+## Organizing YAML with Kustomize
+
+As soon as you need to deploy your application to more than one cluster (e.g. local, test and production environments), it becomes challenging to maintain all the different options in YAML. Ideally you want to be able to create all the options and commit them to source control. There are many options to maintain and organize YAML files, many of which involve templating. Templating means replacing placeholders in files that you create with different values at deployment time. The problem with this that the template files tend not to be valid on their own, and they are hard to read, test and maintain.
+
+https://github.com/kubernetes-sigs/kustomize[Kustomize] is a template-free solution to this problem. It works by merging YAML "patches" into a "base" configuration. A patch is just the bits that change, which can be additions or replacements.
+
+To get started you need a base configuration, for which we can use the `deployment.yaml` that we already created, and then we add a really basic `kustomization.yaml`:
+
+```
+$ mkdir -p k8s/base
+$ mv deployment.yaml k8s/base
+$ cat > k8s/base/kustomization.yaml 
+resources:
+- deployment.yaml
+```
+
+With this configuration we can test that it works:
+
+```
+$ kustomize build k8s/base/
+apiVersion: v1
+kind: Service
+metadata:
+  name: demo
+...
+```
+
+The merged YAML is trivial in this case - it is just a copy of the `deployment.yaml`. It is echoed to standard out, so it can be applied to the cluster with
+
+```
+$ kustomize build k8s/base/ | kubectl apply -f -
+```
+
+To add a new environment we just create a patch and a new `kustomization.yaml`:
+
+```
+$ mkdir -p k8s/prod
+$ cd $_
+$ touch kustomization.yaml
+$ kustomize edit add base ../base
+$ touch patch.yaml
+$ kustomize edit add patch patch.yaml
+$ cat kustomization.yaml 
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- ../base
+patchesStrategicMerge:
+- patch.yaml
+$ cd ../..
+```
+
+The `patch.yaml` is still empty so if you create a merged deployment using `kustomize build k8s/prod` it will be identical to the base set. Let's add some configuration to the deployment for probes, as would be typical for an app using Spring Boot actuators:
+
+```
+$ cat > k8s/prod/patch.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demo
+spec:
+  template:
+    spec:
+      containers:
+        - name: demo
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 3
+          readinessProbe:
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            httpGet:
+              path: /actuator/info
+              port: 8080
+```
+
+When we create the merged configuration:
+
+```
+$ kustomize build k8s/prod
+```
+
+`kustomize` matches the `kind` and `metadata.name` in the patch with the deployment in the base, adding the probes. You could also change the container image, port mapping, volume mounts, etc. (anything that might change between environments).
+
+## Building an Image with Pack
+
+The https://github.com/buildpack/pack[Pack CLI] can be used to build a container image with https://buildpacks.io[Cloud Native Buildpacks] (as an alternative to `jib`, or docker). There are many advantages to using Cloud Native Buildpacks, most of which are related to the ability in principle to patch images without rebuilding the app or even changing the application code.
+
+Download the CLI and set it up:
+
+```
+$ pack set-default-builder cloudfoundry/cnb:bionic
+```
+
+Then you can build your app (from the top-level source directory) and create an image in one line:
+
+```
+$ pack build myorg/demo -p .
+Pulling image index.docker.io/cloudfoundry/cnb:bionic
+bionic: Pulling from cloudfoundry/cnb
+...
+===> DETECTING
+[detector] ======== Results ========
+[detector] skip: org.cloudfoundry.archiveexpanding@v1.0.68
+[detector] pass: org.cloudfoundry.openjdk@v1.0.36
+[detector] pass: org.cloudfoundry.buildsystem@v1.0.86
+[detector] pass: org.cloudfoundry.jvmapplication@v1.0.52
+[detector] pass: org.cloudfoundry.tomcat@v1.0.86
+[detector] pass: org.cloudfoundry.springboot@v1.0.70
+[detector] pass: org.cloudfoundry.distzip@v1.0.69
+[detector] skip: org.cloudfoundry.procfile@v1.0.28
+[detector] skip: org.cloudfoundry.azureapplicationinsights@v1.0.73
+[detector] skip: org.cloudfoundry.debug@v1.0.73
+[detector] skip: org.cloudfoundry.googlestackdriver@v1.0.22
+[detector] skip: org.cloudfoundry.jdbc@v1.0.72
+[detector] skip: org.cloudfoundry.jmx@v1.0.70
+[detector] skip: org.cloudfoundry.springautoreconfiguration@v1.0.79
+[detector] Resolving plan... (try #1)
+[detector] Success! (6)
+...
+===> BUILDING
+[builder] 
+[builder] Cloud Foundry OpenJDK Buildpack v1.0.36
+[builder]   OpenJDK JDK 11.0.4: Reusing cached layer
+[builder]   OpenJDK JRE 11.0.4: Reusing cached layer
+...
+[builder] [INFO] BUILD SUCCESS
+[builder] [INFO] ------------------------------------------------------------------------
+[builder] [INFO] Total time:  01:23 min
+[builder] [INFO] Finished at: 2019-10-18T12:16:46Z
+[builder] [INFO] ------------------------------------------------------------------------
+...
+[cacher] Caching layer 'org.cloudfoundry.springboot:spring-boot' with SHA sha256:6a1b3476da1c56f889f48d9f69dbe7e35369d4db880ac0f8226a2d9bc5fa65f8
+Successfully built image myorg/demo
+```
+
+
+Just like the `jib` example, this pushes the image to Dockerhub. To push to a different registry you just need a prefix on the image tag. E.g. for Google Container Registry (assuming you have a project called "myorg"):
+
+```
+$ pack build gcr.io/myorg/demo -p .
+```
+
+Instead of building from source, you can also build an image from a JAR file. E.g.
+
+```
+$ pack build myorg/demo -p target/*.jar
+```
+
+The resulting image can be run locally with docker, or deployed to kubernetes using the YAML we created already.
+
+## Building in the Cluster with Kpack
+
+To automate the build, and benefit from some neat tooling for managing base images and things like JDK patches, you can build in the cluster with https://github.com/pivotal/kpack[Kpack]. Kpack is a bunch of kubernetes resources that allow you to automatically build and maintain application images from withing a cluster. Install it according to the instructions in the README (it's just a YAML file you can apply to the cluster). E.g.
+
+```
+$ kubectl apply -f https://github.com/pivotal/kpack/releases/download/v0.0.4/release-0.0.4.yaml
+```
+
+You need to define a "builder" for the cluster, similarly to the way we set up the default builder for `pack`:
+
+```
+$ kubectl apply -f -
+apiVersion: build.pivotal.io/v1alpha1
+kind: ClusterBuilder
+metadata:
+  name: sample-builder
+spec:
+  image: cloudfoundry/cnb:bionic
+```
+
+You will also need a service account and a secret that allows the service account to push to a Docker registry. There is an example in the https://github.com/pivotal/kpack/blob/master/docs/tutorial.md[online tutorial] (steps 1 and 2). Create a service account called "service-account" in the default namespace, to keep it consistent with the sample YAML in the next paragraph.
+
+To start with you declare an "image" resource.
+
+```
+$ kubectl apply -f -
+apiVersion: build.pivotal.io/v1alpha1
+kind: Image
+metadata:
+  name: demo
+spec:
+  tag: myorg/demo
+  serviceAccount: service-account
+  builder:
+    name: default-builder
+    kind: ClusterBuilder
+  source:
+    git:
+      url: https://github.com/myorg/demo
+      revision: master
+```
+
+Note that the `tag` specified above has no prefix, so it defaults to `index.docker.io`. A successful build will result in a push to dockerhub.
+
+An image resource creates a source resolver that monitors your source code (e.g. looking for git commits). When the source changes there is a build resource that creates a new pod to build your application. You can see these resources in kubernetes:
+
+```
+$ kubectl get pods,images,sourceresolvers,build
+NAME                               READY     STATUS             RESTARTS   AGE
+pod/demo-build-1-52rws-build-pod   0/1       Completed          0          3h43m
+
+NAME                          LATESTIMAGE                                  READY
+image.build.pivotal.io/demo   index.docker.io/myorg/demo@sha256:8af46...   True
+
+NAME                                          AGE
+sourceresolver.build.pivotal.io/demo-source   25h
+
+NAME                                        IMAGE                                                         SUCCEEDED
+build.build.pivotal.io/demo-build-1-52rws   index.docker.io/myorg/demo@sha256:8af46...     True
+
+```
+
+The pod showing there is the one that ran the first (index "1") build for the "demo" image. The build was successful, as we can tell from the image and the build resources. If it had failed the status would be `Error` (probably), and we could investigate the failure by asking kubernetes to describe the pod. It has a number of init containers:
+
+```
+$ kubectl get pod demo-build-1-52rws-build-pod -o jsonpath='{.spec.initContainers[*].name}'
+creds-init source-init prepare detect restore analyze build export cache
+```
+
+One of the init containers would have failed, and hopefully emitted logs. E.g.
+
+```
+$ kubectl logs demo-build-1-52rws-build-pod -c build
+
+Cloud Foundry OpenJDK Buildpack v1.0.36
+  OpenJDK JRE 11.0.4: Reusing cached layer
+
+Cloud Foundry JVM Application Buildpack v1.0.52
+  Executable JAR: Contributing to layer
+    Writing CLASSPATH to shared
+  Process types:
+    executable-jar: java -cp $CLASSPATH $JAVA_OPTS org.springframework.boot.loader.JarLauncher
+    task:           java -cp $CLASSPATH $JAVA_OPTS org.springframework.boot.loader.JarLauncher
+    web:            java -cp $CLASSPATH $JAVA_OPTS org.springframework.boot.loader.JarLauncher
+...
+```
+
+You can also get a summary of the init container logs using the `logs` utility, downloadable from the https://github.com/pivotal/kpack/releases[Kpack releases] page. E.g.
+
+```
+$ logs -image demo
+{"level":"info","ts":1571388662.353281,"logger":"fallback-logger","caller":"creds-init/main.go:40","msg":"Credentials initialized.","commit":"002a41a"}
+...
+```
+
+Note that `logs` never exits - it's like `tail -f`. A successful build shows the image being created:
+
+```
+$ logs -image demo
+...
+Reusing layer 'org.cloudfoundry.jvmapplication:executable-jar' with SHA sha256:4504416...
+Exporting layer 'org.cloudfoundry.springboot:spring-boot' with SHA sha256:fa22107...
+Exporting layer 'org.cloudfoundry.springautoreconfiguration:auto-reconfiguration' with SHA sha256:55c92a2c...
+*** Images:
+      myorg/demo - succeeded
+      index.docker.io/myorg/demo:b2.20191018.091148 - succeeded
+
+*** Digest: sha256:8af467...
+...
+```
+
+The image can then be pulled from `myorg/demo:latest` or from the explicit, generated build label (`b2.20191018.091148` in this case), or from the sha256 digest (as per the output from `kubectl`). E.g.
+
+```
+$ docker run -p 8080:8080 myorg/demo@sha256:8af467...
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::        (v2.2.0.RELEASE)
+
+...
+2019-10-18 08:52:39.283  INFO 1 --- [           main] o.s.b.web.embedded.netty.NettyWebServer  : Netty started on port(s): 8080
+2019-10-18 08:52:39.287  INFO 1 --- [           main] com.example.demo.DemoApplication         : Started DemoApplication in 0.948 seconds (JVM running for 1.087)
+```
