@@ -194,7 +194,7 @@ $ docker build -t gcr.io/$GCP_PROJECT/demo .
 $ gcloud docker -- push gcr.io/$GCP_PROJECT/demo
 ```
 
-If you write your k8s YAML by hand it would still need to have the project id hard-coded in it, so it might be better to use a tool to generate or manage the deployments.  Example a [simple client-side template engine][(https://github.com/shyiko/kubetpl), or just UNIX stuff, e.g.
+If you write your k8s YAML by hand it would still need to have the project id hard-coded in it, so it might be better to use a tool to generate or manage the deployments.  Example a [simple client-side template engine](https://github.com/shyiko/kubetpl), or just UNIX stuff, e.g.
 
 ```
 $ eval "echo \"$(cat encode.yaml)\"" | kubectl apply -f -
@@ -210,7 +210,9 @@ Instead of `gcloud docker ...` (which I always forget to do) you can use a utili
 $ curl -L https://github.com/GoogleCloudPlatform/docker-credential-gcr/releases/download/v1.4.3/docker-credential-gcr_linux_amd64-1.4.3.tar.gz | (cd ~/bin; tar -zxvf -)
 $ docker-credential-gcr configure-docker
 $ docker push gcr.io/$GCP_PROJECT/demo
-``
+```
+
+This last step actually installs "credHelpers" in your `~/.docker/config.json` (son it's permanent). It also slows down all docker builds (sigh) - see https://github.com/GoogleCloudPlatform/docker-credential-gcr/issues/11. You can speed it up a bit by pruning the "credHelpers" to just `gcr.io`. 
 
 ## Curl
 
@@ -279,4 +281,25 @@ and point the Maven build at the mirror:
 
 Works!
 
+## Multistage Build
+
+```
+FROM openjdk:8-alpine as build
+VOLUME /root/.m2
+COPY pom.xml /app/pom.xml
+COPY src /app/src
+COPY .mvn /app/.mvn
+COPY mvnw /app/mvnw
+WORKDIR /app
+RUN ./mvnw clean install
+
+FROM openjdk:8-alpine
+VOLUME /tmp
+COPY --from=build /app/target/dependency/BOOT-INF/lib /app/lib
+COPY --from=build /app/target/dependency/META-INF /app/META-INF
+COPY --from=build /app/target/dependency/BOOT-INF/classes /app
+ENTRYPOINT ["java","-Xmx128m","-Djava.security.egd=file:/dev/./urandom","-XX:TieredStopAtLevel=1","-noverify","-cp","app:app/lib/*","com.example.demo.Uppercase"]
+```
+
+Issue is that the `/root/.m2` volume is not the same between builds, so there is no cache.
 
