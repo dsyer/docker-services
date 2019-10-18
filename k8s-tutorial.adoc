@@ -84,17 +84,17 @@ You can check that the app is running:
 
 ```
 $ kubectl get all
-NAME                               READY     STATUS      RESTARTS   AGE
+NAME                             READY     STATUS      RESTARTS   AGE
 pod/demo-658b7f4997-qfw9l        1/1       Running     0          146m
 
 NAME                 TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
 service/kubernetes   ClusterIP   10.43.0.1       <none>        443/TCP    2d18h
 service/demo         ClusterIP   10.43.138.213   <none>        8080/TCP   21h
 
-NAME                     READY     UP-TO-DATE   AVAILABLE   AGE
+NAME                   READY     UP-TO-DATE   AVAILABLE   AGE
 deployment.apps/demo   1/1       1            1           21h
 
-NAME                                DESIRED   CURRENT   READY     AGE
+NAME                              DESIRED   CURRENT   READY     AGE
 replicaset.apps/demo-658b7f4997   1         1         1         21h
 d
 ```
