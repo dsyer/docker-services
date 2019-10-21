@@ -5,7 +5,7 @@
 There are many choices for how to run kubernetes. One of the simplest and least resource intensive is to use the `k3d` tool from https://github.com/rancher/k3d[Rancher], which runs a really slim cluster in a docker image.
 
 ```
- $ k3d create
+$ k3d create
 INFO[0000] Created cluster network with ID a89842a7f05a2e3fc539fff30db6bb17fed010889f08aa87dec895c3324c191c 
 ...
 INFO[0030] SUCCESS: created cluster [k3s-default]       
@@ -13,9 +13,10 @@ INFO[0030] You can now use the cluster with:
 
 export KUBECONFIG="$(k3d get-kubeconfig --name='k3s-default')"
 kubectl cluster-info 
+$
 ```
 
-You can use that `KUBECONFIG` environment variable per the suggestion, and lose the context if you switch terminals. Or you can merge the k3d cluster config with your existing config:
+You can use that `KUBECONFIG` environment variable per the suggestion, but then you lose the context if you switch terminals. Or you can merge the k3d cluster config with your existing config:
 
 ```
 $ KUBECONFIG="$(k3d get-kubeconfig)":~/.kube/config kubectl config view --merge --flatten > config.yaml
@@ -33,6 +34,8 @@ service/kubernetes   ClusterIP   10.43.0.1    <none>        443/TCP   7m13s
 ```
 
 Most of what follows would work just fine if you create your cluster in some other way (e.g. on GCP or AWS). There are also other options for local clusters, like https://github.com/kubernetes/minikube[Minikube] or https://github.com/kubernetes-sigs/kind[Kind].
+
+NOTE: If you have limited resources, but have an internet connection, you can get a nice playground for trying out kubernetes using the https://kubernetes.io/docs/tutorials/kubernetes-basics[bootcamp tutorial]. You get a kubernetes cluster and a bash terminal with kubectl, docker, java and git. All or most of the examples here should work there, if you don't want to use `sk3d`.
 
 ## Build and Containerize a Spring Boot Application
 
