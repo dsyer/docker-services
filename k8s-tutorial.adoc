@@ -180,6 +180,8 @@ The merged YAML is trivial in this case - it is just a copy of the `deployment.y
 $ kustomize build k8s/base/ | kubectl apply -f -
 ```
 
+### Add a New Environment
+
 To add a new environment we just create a patch and a new `kustomization.yaml`:
 
 ```
@@ -233,6 +235,68 @@ $ kustomize build k8s/prod
 ```
 
 `kustomize` matches the `kind` and `metadata.name` in the patch with the deployment in the base, adding the probes. You could also change the container image, port mapping, volume mounts, etc. (anything that might change between environments).
+
+### Add a Config Map
+
+A useful customization is to add a config map with a file called `application.properties` so that Spring Boot can consume it easily. The config map isn't in the base deployment, so we add it as a resource:
+
+```
+$ kubectl create configmap demo-config --dry-run -o yaml > k8s/local/config.yaml
+$ (cd k8s/local; kustomize edit add resource config.yaml)
+```
+
+Then we add the properties file
+
+```
+$ touch k8s/local/application.properties
+$ (cd k8s/local; kustomize edit add configmap demo-config --from-file application.properties)
+$ cat >> k8s/local/config.yaml
+  behavior: merge
+```
+
+You can edit the properties file to add Spring Boot configuration, e.g.
+
+[source]
+----
+info.name=demo
+----
+
+Then we mount the config map in the pod:
+
+```
+$ touch k8s/local/mount.yaml
+$ (cd k8s/local; kustomize edit add patch mount.yaml)
+$ cat > k8s/local/mount.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demo
+spec:
+spec:
+  template:
+    spec:
+      containers:
+      - image: dsyer/demo
+        name: demo
+        volumeMounts:
+        - name: demo-config
+          mountPath: /workspace/config/
+      volumes:
+      - name: demo-config
+        configMap:
+          name: demo-config
+```
+
+The file `application.properties` will be present inside the mounted volume `/workspace/config/`. Since `jib` created the application with a working directory of `/workspace`, this means that Spring Boot will automatically load the properties file for us on startup.
+
+To update the application deployment and test the change (assuming Spring Boot actuators are on the classpath):
+
+```
+$ kustomize build k8s/local | kubectl apply -f -
+$ kubectl port-forward svc/demo 8080:8080
+$ curl localhost:8080/actuator/info
+{"name":"demo"}
+```
 
 ## Building an Image with Pack
 
@@ -429,3 +493,76 @@ $ docker run -p 8080:8080 myorg/demo@sha256:8af467...
 2019-10-18 08:52:39.283  INFO 1 --- [           main] o.s.b.web.embedded.netty.NettyWebServer  : Netty started on port(s): 8080
 2019-10-18 08:52:39.287  INFO 1 --- [           main] com.example.demo.DemoApplication         : Started DemoApplication in 0.948 seconds (JVM running for 1.087)
 ```
+
+## Basic Observability with Prometheus
+
+### Install Helm
+
+First download and install the https://github.com/helm/helm/blob/master/README.md[Helm] CLI. Then initialize it (assuming you have RBAC enabled in your cluster):
+
+```
+$ kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admin --serviceaccount=kube-system:default
+clusterrolebinding.rbac.authorization.k8s.io/tiller-cluster-rule created
+$ helm init --upgrade --service-account default
+$ helm list
+```
+
+The result is empty, but if there are no errors then you are ready to start. More https://helm.sh/docs/[docs] online.
+
+### Install and Configure Prometheus
+
+A minimal, ephemeral (not for production use) prometheus:
+
+```
+$ helm install stable/prometheus --name prometheus --set=server.persistentVolume.enabled=false,alertmanager.enabled=false,kubeStateMetrics.enabled=false,pushgateway.enabled=false,nodeExporter.enabled=falsealertmanager.enabled=false
+$ kubectl port-forward svc/prometheus-server 8000:80
+```
+
+With prometheus running, your Spring Boot application needs to expose metrics in the right format. To do that we just need a couple of dependencies:
+
+.pom.xml:
+[source,indent=0]
+----
+		<dependency>
+			<groupId>io.micrometer</groupId>
+			<artifactId>micrometer-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.micrometer</groupId>
+			<artifactId>micrometer-registry-prometheus</artifactId>
+		</dependency>
+----
+
+And we need some configuration in the application to expose the endpoint:
+
+.application.properties:
+[source]
+----
+management.endpoints.web.exposure.include=prometheus,info,health
+----
+
+Then, finally, we need to tell prometheus where the endpoint is (it looks at `/metrics` on port 80 by default). So in the kubernetes deployment we add some annotations:
+
+```
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demo
+spec:
+  template:
+    metadata:
+      annotations:
+        prometheus.io/path: /actuator/prometheus
+        prometheus.io/port: "8080"
+        prometheus.io/scrape: "true"
+...
+```
+
+The annotations are picked up by "scraping rules" that were defined for us in the helm chart.
+
+TODO:
+
+* Security for the actuator endpoint
+* Automate adding pod annotations (CRD?)
+* Automate adding actuators
+* Kubernetes native actuators (like in PCF)
