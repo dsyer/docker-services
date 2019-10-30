@@ -135,6 +135,17 @@ $ curl localhost:8080
 Hello World!
 ```
 
+### Making Changes
+
+One of the benefits of having a YAML descriptor of your application in source control is that you can use it to trigger an upgrade. The workflow would be something like
+
+1. Make a change to the app.
+2. Build the container: `mvn install && docker build -t myorg/myapp .`
+3. Push it to the registry: `docker push myorg/myapp`
+3. Apply the kubernetes configuration: `kubectl apply -f deployment.yaml`
+
+The deployment notices that it has a new image to install, so it creates a new pod, given that it has the default `ImagePullPolicy: Always`. Once the new pod is up and running it shuts down the old one. (Steps 2 and 3 above would be combined into one if you used jib instead of docker.)
+
 ### Quick and Dirty Ingress with Ngrok
 
 If you use `kubectl port-forward` to create an SSH tunnel to the service you can only access it from localhost. If, instead, you want to share the app on the internet or LAN, you can get something up and running really quickly with `ngrok`. Example:
