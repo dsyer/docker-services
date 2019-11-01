@@ -2,24 +2,21 @@
 
 ## Setting Up a Kubernetes Cluster
 
-There are many choices for how to run kubernetes. One of the simplest and least resource intensive is to use the `k3d` tool from https://github.com/rancher/k3d[Rancher], which runs a really slim cluster in a docker image.
+There are many choices for how to run kubernetes. One of the simplest and least resource intensive is to use the `kind` tool from https://github.com/kubernetes-sigs/kind[Kubernetes SIG], which runs a really slim cluster in a docker image.
 
 ```
-$ k3d create
-INFO[0000] Created cluster network with ID a89842a7f05a2e3fc539fff30db6bb17fed010889f08aa87dec895c3324c191c 
-...
-INFO[0030] SUCCESS: created cluster [k3s-default]       
-INFO[0030] You can now use the cluster with:
+$ kind create cluster
+Cluster creation complete. You can now use the cluster with:
 
-export KUBECONFIG="$(k3d get-kubeconfig --name='k3s-default')"
-kubectl cluster-info 
+export KUBECONFIG="$(kind get kubeconfig-path --name="kind")"
+kubectl cluster-info
 $
 ```
 
-You can use that `KUBECONFIG` environment variable per the suggestion, but then you lose the context if you switch terminals. Or you can merge the k3d cluster config with your existing config:
+You can use that `KUBECONFIG` environment variable per the suggestion, but then you lose the context if you switch terminals. Or you can merge the kind cluster config with your existing config:
 
 ```
-$ KUBECONFIG="$(k3d get-kubeconfig)":~/.kube/config kubectl config view --merge --flatten > config.yaml
+$ KUBECONFIG="$(kind get kubeconfig-path)":~/.kube/config kubectl config view --merge --flatten > config.yaml
 $ mv config.yaml ~/.kube/config
 ```
 
@@ -35,7 +32,32 @@ service/kubernetes   ClusterIP   10.43.0.1    <none>        443/TCP   7m13s
 
 Most of what follows would work just fine if you create your cluster in some other way (e.g. on GCP or AWS). There are also other options for local clusters, like https://github.com/kubernetes/minikube[Minikube] or https://github.com/kubernetes-sigs/kind[Kind].
 
-NOTE: If you have limited resources, but have an internet connection, you can get a nice playground for trying out kubernetes using the https://kubernetes.io/docs/tutorials/kubernetes-basics[bootcamp tutorial]. You get a kubernetes cluster and a bash terminal with kubectl, docker, java and git. All or most of the examples here should work there, if you don't want to use `sk3d`.
+NOTE: If you have limited resources, but have an internet connection, you can get a nice playground for trying out kubernetes using the https://kubernetes.io/docs/tutorials/kubernetes-basics[bootcamp tutorial]. You get a kubernetes cluster and a bash terminal with kubectl, docker, java and git. All or most of the examples here should work there, if you don't want to use `kind`.
+
+### Connecting to Kubernetes from Inside a Container
+
+If you are using kind to run your cluster, then the kubernetes API is exposed on localhost on a random port. It is also exposed on the local docker network on port 6443. On Linux (not sure about Mac and Windows) this means that you can connect to it from another container using that address, and `kind` will even tell you how.
+
+First make a copy of the kube config for the internal address:
+
+```
+$ kind get kubeconfig --internal > ~/.kube/kind-config-internal
+```
+
+Then if you have a container `myorg/mydevcontainer` with docker and kubectl installed, you can run it like this:
+
+```
+$ docker run --mount type=bind,source=$HOME/.kube,target=/home/vscode/.kube -e KUBECONFIG=/home/vscode/.kube/kind-config-internal -v /var/run/docker.sock:/var/run/docker.sock -ti myorg/mydevcontainer /bin/bash
+#/ kubectl cluster-info
+Kubernetes master is running at https://172.17.0.3:6443
+KubeDNS is running at https://172.17.0.3:6443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+
+To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
+```
+
+Using this you can launch VSCode on a project using the remote container extension and then build and operator it from within the container.
+
+NOTE: Rancher has another dockerized kubernetes cluster called https://github.com/rancher/k3s[k3s] which works in a similar way to kind. They don't have the "internal" flag though, so it's harder to use from another container
 
 ## Build and Containerize a Spring Boot Application
 
@@ -162,7 +184,7 @@ NOTE: A global tunnel on `ngrok` is certainly not recommended for production app
 
 As soon as you need to deploy your application to more than one cluster (e.g. local, test and production environments), it becomes challenging to maintain all the different options in YAML. Ideally you want to be able to create all the options and commit them to source control. There are many options to maintain and organize YAML files, many of which involve templating. Templating means replacing placeholders in files that you create with different values at deployment time. The problem with this that the template files tend not to be valid on their own, and they are hard to read, test and maintain.
 
-https://github.com/kubernetes-sigs/kustomize[Kustomize] is a template-free solution to this problem. It works by merging YAML "patches" into a "base" configuration. A patch is just the bits that change, which can be additions or replacements.
+https://github.com/kubernetes-sigs/kustomize[Kustomize] is a template-free solution to this problem. It works by merging YAML "patches" into a "base" configuration. A patch is just the bits that change, which can be additions or replacements. Kustomize is actually built into the `kubectl` CLI (type `kubectl kustomize --help` for details) but currently pegged to an old version that doesn't have some interesting features that we want to use (from version 3).
 
 To get started you need a base configuration, for which we can use the `deployment.yaml` that we already created, and then we add a really basic `kustomization.yaml`:
 
