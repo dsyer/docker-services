@@ -89,7 +89,7 @@ $ ./mvnw com.google.cloud.tools:jib-maven-plugin:build -Dimage=myorg/demo
 
 This command creates an image and pushes it to https://hub.docker.com[Dockerhub] at `myorg/demo` (so your local docker config has to have permission to push to `myorg`). Any way you can get a docker image into a registry will work, but remember that the kubernetes cluster will need to be able to pull the images, so a public registry is easiest to work with.
 
-Sometimes a `Dockerfile` is easier to work with. Here's one that builds and deploys the application above:
+Sometimes a `Dockerfile` is easier to work with. Here's one that builds and deploys the application above (use it with buildkit and remember to set `DOCKER_BUILDKIT=1` in the shell where you call `docker`):
 
 ```
 # syntax=docker/dockerfile:experimental
