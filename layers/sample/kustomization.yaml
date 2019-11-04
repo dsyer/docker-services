@@ -4,6 +4,6 @@ namePrefix: demo-
 commonLabels:
   app: demo
 resources:
-- ../base
+- github.com/dsyer/docker-services/layers/base?ref=master
 patchesStrategicMerge:
-  - deployment.yaml
+- deployment.yaml
