@@ -16,6 +16,15 @@ spec:
     metadata:
       labels:
         app: app
+    spec:
+      containers:
+      - name: app
+        envFrom:
+        - configMapRef:
+            name: env-config
+        ports:
+        - containerPort: 8080
+          name: http
 
 ---
 
