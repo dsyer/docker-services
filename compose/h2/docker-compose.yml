@@ -1,0 +1,17 @@
+h2:
+  image: oscarfonts/h2
+  ports:
+    - "9092:9092"
+    - "9093:9093"
+  volumes:
+    - /root/tmp
+  command:
+    - sh
+    - -c
+    - >
+       java -cp /opt/h2/bin/h2*.jar org.h2.tools.Server 
+       -ifNotExists -web -webAllowOthers -webPort 9093
+       -tcp -tcpAllowOthers -tcpPort 9092 -baseDir /root/tmp
+  working_dir: /root/tmp
+
+# jdbc:h2://localhost:9092/test

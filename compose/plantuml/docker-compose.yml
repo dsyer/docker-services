@@ -1,0 +1,5 @@
+plantuml:
+  image: plantuml/plantuml-server:tomcat
+  ports:
+    - "8989:8080"
+

@@ -1,4 +1,0 @@
-artifactory:
-  image: jfrog-docker-registry.bintray.io/artifactory/artifactory-oss:latest
-  ports:
-    - "8081:8081"

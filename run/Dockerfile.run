@@ -1,3 +1,0 @@
-FROM cfbuildpacks/cflinuxfs3-cnb-experimental:run
-
-ENTRYPOINT /lifecycle/launcher

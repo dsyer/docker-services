@@ -1,0 +1,18 @@
+apiVersion: projectriff.io/v1
+kind: Function
+metadata:
+  name: hello
+spec:
+  protocol: http
+  input: names
+  container:
+    image: gcr.io/cf-sandbox-dsyer/hello-cgi:latest
+    env:
+    - name: PORT
+      value: 8080
+---
+
+apiVersion: projectriff.io/v1
+kind: Topic
+metadata:
+  name: names

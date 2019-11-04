@@ -1,0 +1,25 @@
+version: "2"
+services:
+
+  nexus:
+    image: sonatype/nexus3
+    ports:
+      - "8081:8081"
+    networks:
+      - isolated
+      - default
+
+  app:
+    image: openjdk:8-jdk-alpine
+    command: ["./mvnw", "package"]
+    working_dir: "/app"
+    volumes:
+      - ".:/app"
+      - "./root:/root"
+    networks:
+      - isolated
+
+networks:
+  isolated:
+    driver: bridge
+    internal: true

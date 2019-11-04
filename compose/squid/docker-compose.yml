@@ -1,0 +1,6 @@
+squid:
+  image: dsyer/squid
+  expose:
+    - 3128
+  ports:
+    - "3128:3128"

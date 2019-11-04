@@ -1,6 +1,0 @@
-genisys:
-  build: .
-  ports:
-    - "19132:19132/udp"
-  volumes:
-    - "./genisys:/srv/genisys"

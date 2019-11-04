@@ -1,9 +1,0 @@
-httpd:
-  image: httpd:alpine
-  environment:
-    - PORT=8080
-  ports:
-    - "8080:8080"
-  volumes:
-    - "./conf:/usr/local/apache2/conf:ro"
-    - "./htdocs:/usr/local/apache2/htdocs:ro"
