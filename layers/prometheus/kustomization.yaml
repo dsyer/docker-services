@@ -1,0 +1,14 @@
+# $ kustomize build k8s/dev | kubectl apply -f -
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- ../actuator
+- config.yaml
+patchesStrategicMerge:
+- mount.yaml
+- annotations.yaml
+configMapGenerator:
+- files:
+  - application.properties
+  name: app-config
+  behavior: merge

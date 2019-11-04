@@ -4,6 +4,7 @@ namePrefix: demo-
 commonLabels:
   app: demo
 resources:
-- github.com/dsyer/docker-services/layers/base?ref=master
+# Can replace this with github.com/dsyer/docker-services/layers/prometheus
+- ../prometheus
 patchesStrategicMerge:
 - deployment.yaml
