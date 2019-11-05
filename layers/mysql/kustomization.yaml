@@ -16,5 +16,3 @@ vars:
       apiVersion: v1
       kind: Service
       name: mysql
-    fieldref:
-      fieldpath: metadata.name
