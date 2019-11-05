@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app
+spec:
+  template:
+    spec:
+      containers:
+      - name: app
+        volumeMounts:
+        - name: mysql-config
+          mountPath: /config/mysql
+        env:
+        - name: MYSQL_HOST
+          value: $(MYSQL_SERVICE_NAME)
+      volumes:
+      - name: mysql-config
+        configMap:
+          name: mysql-config
