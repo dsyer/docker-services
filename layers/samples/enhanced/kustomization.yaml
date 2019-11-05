@@ -5,7 +5,7 @@ namePrefix: demo-
 commonLabels:
   app: demo
 
-bases:
+resources:
 # Can replace this with github.com/dsyer/docker-services/layers/prometheus
 - ../../actuator
 

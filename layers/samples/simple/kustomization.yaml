@@ -1,7 +1,7 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namePrefix: demo-
-bases:
+resources:
 # Can replace this with github.com/dsyer/docker-services/layers/prometheus
 - ../../base
 patchesStrategicMerge:

@@ -10,3 +10,11 @@ configMapGenerator:
     behavior: merge
     files:
       - application.properties
+vars:
+  - name: MYSQL_SERVICE_NAME
+    objref:
+      apiVersion: v1
+      kind: Service
+      name: mysql
+    fieldref:
+      fieldpath: metadata.name
