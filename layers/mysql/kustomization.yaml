@@ -11,8 +11,10 @@ configMapGenerator:
     files:
       - application.properties
 vars:
-  - name: MYSQL_SERVICE_NAME
+  - name: MYSQL_HOST
     objref:
       apiVersion: v1
       kind: Service
       name: mysql
+configurations:
+  - varreference.yaml

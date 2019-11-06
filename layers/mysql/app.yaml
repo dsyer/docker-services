@@ -10,9 +10,6 @@ spec:
         volumeMounts:
         - name: mysql-config
           mountPath: /config/mysql
-        env:
-        - name: MYSQL_HOST
-          value: $(MYSQL_SERVICE_NAME)
       volumes:
       - name: mysql-config
         configMap:
