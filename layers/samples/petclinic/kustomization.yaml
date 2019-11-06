@@ -6,8 +6,11 @@ resources:
 - ../../mysql
 namePrefix: demo-
 patchesStrategicMerge:
-- deployment.yaml
+# Need to build with `--load_restrictor none`
 - ../../mysql/app.yaml
+images:
+  - name: dsyer/template
+    newName: dsyer/petclinic
 configMapGenerator:
   - name: env-config
     behavior: merge

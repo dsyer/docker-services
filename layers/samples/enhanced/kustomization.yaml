@@ -10,6 +10,9 @@ resources:
 - ../../actuator
 
 patchesStrategicMerge:
-- deployment.yaml
 # Need to build with `--load_restrictor none`
 - ../env/env.yaml
+
+images:
+  - name: dsyer/template
+    newName: dsyer/demo
