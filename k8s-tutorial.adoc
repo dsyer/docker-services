@@ -359,6 +359,76 @@ $ curl localhost:8080/actuator/info
 {"name":"demo"}
 ```
 
+## Application Metadata with Kapp
+
+There are quite a few tools available that manage a set of kubernetes resources, applying a label to them, and allowing users to adjust the resources as a group. The lightest weight of these tools is probably `kapp` (https://github.com/k14s/kapp[from k14s]). It works without admin privileges and does not use custom CRDs, so you can use it as a regular user in any namespace you have access to.
+
+You can deploy a directory (containing multiple YAML files) and dub it an application called "demo", e.g.
+
+```
+$ kapp deploy -a demo -f k8s/demo/
+Changes
+
+Namespace  Name               Kind                   Conds.  Age  Op      Wait to    Rs  Ri  
+default    demo-app           Deployment             -       -    create  reconcile  -   -  
+^          demo-app           Service                -       -    create  reconcile  -   -  
+
+Op:      7 create, 0 delete, 0 update, 0 noop
+Wait to: 7 reconcile, 0 delete, 0 noop
+
+Continue? [yN]: y
+
+10:10:36AM: ---- applying 2 changes [0/2 done] ----
+10:10:36AM: create service/demo-app (v1) namespace: default
+10:10:36AM: create deployment/demo-app (apps/v1) namespace: default
+10:10:37AM: ---- waiting on 2 changes [0/2 done] ----
+10:10:37AM: ok: reconcile service/demo-app (v1) namespace: default
+10:10:37AM: ongoing: reconcile deployment/demo-app (apps/v1) namespace: default
+10:10:37AM:  ^ Waiting for 1 unavailable replicas
+10:10:37AM:  L ok: waiting on replicaset/demo-app-66ddc7584c (apps/v1) namespace: default
+10:10:37AM:  L ongoing: waiting on pod/demo-app-66ddc7584c-8rwgv (v1) namespace: default
+10:10:37AM:     ^ Pending: ContainerCreating
+10:10:41AM: ok: reconcile deployment/demo-app (apps/v1) namespace: default
+10:10:41AM: ---- applying complete [2/2 done] ----
+10:10:41AM: ---- waiting complete [2/2 done] ----
+
+Succeeded
+```
+
+If you apply the same manifest twice it's a no-op:
+
+```
+$ kapp deploy -a demo -f k8s/demo/
+Changes
+
+Namespace  Name  Kind  Conds.  Age  Op  Wait to  Rs  Ri  
+
+Op:      0 create, 0 delete, 0 update, 0 noop
+Wait to: 0 reconcile, 0 delete, 0 noop
+
+Succeeded
+```
+
+Using `kapp deploy` is like `kubectl apply` but with more features. It looks at what you want to apply and summarizes, then asks you (by default) if you want to proceed. Then it waits until all the changes are applied and reconciled, so at the end all your application pods are running and connected to each other. It adds metadata to the application objects, and stores its own state in a config map called `<appname>-change-<hash>`.
+
+You can tail the logs from all of an application's pods:
+
+```
+$ kapp logs -f -a demo
+...
+demo-app-66ddc7584c-8rwgv > app | 2019-11-06 10:11:09.655  INFO 1 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path ''
+demo-app-66ddc7584c-8rwgv > app | 2019-11-06 10:11:09.657  INFO 1 --- [           main] DemoApplication     : Started DemoApplication in 4.895 seconds (JVM running for 5.277)
+```
+
+You can use `kapp` with `kustomize` in a one-liner like this:
+
+```
+$ kapp deploy -a demo -f <(kustomize build k8s/demo)
+...
+```
+
+(A pipe doesn't work because of the `[yN]` prompt.)
+
 ## Building an Image with Pack
 
 The https://github.com/buildpack/pack[Pack CLI] can be used to build a container image with https://buildpacks.io[Cloud Native Buildpacks] (as an alternative to `jib`, or docker). There are many advantages to using Cloud Native Buildpacks, most of which are related to the ability in principle to patch images without rebuilding the app or even changing the application code.
