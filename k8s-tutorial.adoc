@@ -625,6 +625,210 @@ $ docker run -p 8080:8080 myorg/demo@sha256:8af467...
 2019-10-18 08:52:39.287  INFO 1 --- [           main] com.example.demo.DemoApplication         : Started DemoApplication in 0.948 seconds (JVM running for 1.087)
 ```
 
+## Build and Deploy with Project Riff
+
+https://github.com/projectriff/riff[Riff] is a container runtime with strong links to `pack` and `kpack` for building images. There is a CLI to download, and a https://projectriff.io/docs/v0.4/getting-started/minikube[Getting Started Guide] (the Minikube version works with `kind` if you start from the section entitled https://projectriff.io/docs/v0.4/getting-started/minikube#install-helm[Install Helm]). Install the riff system in the cluster:
+
+```
+$ helm repo add projectriff https://projectriff.storage.googleapis.com/charts/releases
+$ helm repo update
+$ helm install projectriff/riff --name riff --version 0.4.x
+
+```
+
+Now you can use the CLI to build an image and deploy it. From the simple Spring Boot application we used above, we first build an image and install it as an "application" in the cluster:
+
+```
+$ ./mvnw install
+$ riff application create demo --image myorg/myapp --local-path ./target/*.jar
+...
+2019/11/07 11:32:16.070533 DEBUG:  ===> CACHING
+[cacher] Reusing layer 'org.cloudfoundry.openjdk:d2df8bc799b09c8375f79bf646747afac3d933bb1f65de71d6c78e7466ff8fe4' with SHA sha256:636cde73aeca34a1e8730cdb74c4566fbf6ac7646fbbb2370b137ace1b4facf2
+[cacher] Reusing layer 'org.cloudfoundry.jvmapplication:executable-jar' with SHA sha256:3d9310c8403c8710b6adcd40999547d6dc790513c64bba6abc7a338b429c35d2
+[cacher] Reusing layer 'org.cloudfoundry.springboot:spring-boot' with SHA sha256:72b57201988836b0e1b1a6ab1f319be47aee332031850c1f4cd29b010f6a0f22
+[cacher] Reusing layer 'org.cloudfoundry.springautoreconfiguration:0d524877db7344ec34620f7e46254053568292f5ce514f74e3a0e9b2dbfc338b' with SHA sha256:8768e331517cabc14ab245a654e48e01a0a46922955704ad80b1385d3f033c28
+Created application "demo"
+```
+
+NOTE: like with `pack` you can either build from source or from the executable jar file.
+
+At this point it is not running, but the image has been pushed to dockerhub, and there is a resource in the cluster that knows how to locate it:
+
+```
+$ kubectl get applications
+NAME   READY   REASON
+demo   True  
+```
+
+To create a deployment we need to bind the application to a deployer:
+
+```
+$ riff core deployer create demo --application-ref demo --tail
+...
+default/demo-deployer-6b4886c95c-jwbz8[handler]: 2019-11-07 11:56:34.897  INFO 1 --- [           main] o.s.b.web.embedded.netty.NettyWebServer  : Netty started on port(s): 8080
+default/demo-deployer-6b4886c95c-jwbz8[handler]: 2019-11-07 11:56:34.900  INFO 1 --- [           main] com.example.demo.DemoApplication         : Started DemoApplication in 1.403 seconds (JVM running for 1.819)
+```
+
+At this point there is a regular deployment and service (listening on port 80):
+
+```
+$ kubectl get all
+
+NAME                                 READY   STATUS    RESTARTS   AGE
+pod/demo-deployer-6b4886c95c-jwbz8   1/1     Running   0          2m46s
+
+NAME                    TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)   AGE
+service/demo-deployer   ClusterIP   10.101.180.61   <none>        80/TCP    2m46s
+service/kubernetes      ClusterIP   10.96.0.1       <none>        443/TCP   5d20h
+
+NAME                            READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/demo-deployer   1/1     1            1           2m46s
+
+NAME                                       DESIRED   CURRENT   READY   AGE
+replicaset.apps/demo-deployer-6b4886c95c   1         1         1       2m46s
+...
+```
+
+So we can connect to it using a forward (for instance):
+
+```
+$ kubectl port-forward svc/demo-deployer 8080:80
+$ curl localhost:8080
+Hello World!
+```
+
+To update the application we delete it and recreate:
+
+```
+$ riff application delete demo
+$ riff application create demo --image myorg/myapp --local-path ./target/*.jar
+```
+
+Once the image is updated, the cluster will launch a new pod and switch traffic over to it when it comes up.
+
+### Deploying an Application without Riff CLI
+
+The Riff CLI is just a convenience wrapper around a container build, plus a few lines of YAML. If you already bbuilt the container a different way, like with a Dockerfile, you can create the YAML manually and simply apply it with `kubcetl`. The two `riff` invocations result in 2 API objects:
+
+```
+$ kubctl apply -f -
+apiVersion: build.projectriff.io/v1alpha1
+kind: Application
+metadata:
+  name: demo
+spec:
+  image: myorg/myapp
+
+---
+
+apiVersion: core.projectriff.io/v1alpha1
+kind: Deployer
+metadata:
+  name: demo
+  labels:
+    created: manual
+spec:
+  build:
+    applicationRef: demo
+  template:
+    containers:
+    - name: handler
+```
+
+### PetClinic with MySQL on Riff
+
+If you are running a MySQL service already on the cluster you can bind to it using the `--env` and `--envFrom` options on the `riff core deployer create` command. Or you can go the YAML route and bind to the configuration in the deployer spec. Example:
+
+```
+apiVersion: build.projectriff.io/v1alpha1
+kind: Application
+metadata:
+  name: petclinic
+spec:
+  image: myorg/petclinic
+
+---
+
+apiVersion: core.projectriff.io/v1alpha1
+kind: Deployer
+metadata:
+  name: petclinic
+  labels:
+    created: manual
+spec:
+  build:
+    applicationRef: petclinic
+  template:
+    containers:
+    - name: handler
+      env:
+      - name: MYSQL_HOST
+        valueFrom:
+          configMapKeyRef:
+            key: MYSQL_HOST
+            name: env-config
+```
+
+Combine that with a config map called "env-config" that was created by your MySQL service, and you might have a functional Pet Clinic.
+
+The deployer spec is just a pod spec, so you can add other things as well, like volume mounts. If you have an `application.properties` file created by the MySQL service manifest in a config map called "mysql-config", then this might be a good way to read it into the Spring Boot application. Here's a `kustomize` patch for the deployer:
+
+```
+apiVersion: core.projectriff.io/v1alpha1
+kind: Deployer
+metadata:
+  name: petclinic
+spec:
+  template:
+    containers:
+    - name: handler
+      env:
+      - name: SPRING_CONFIG_LOCATION
+        valueFrom:
+          configMapKeyRef:
+            key: SPRING_CONFIG_LOCATION
+            name: env-config
+      imagePullPolicy: Always
+      volumeMounts:
+      - name: mysql-config
+        mountPath: /config/mysql
+    volumes:
+    - name: mysql-config
+      configMap:
+        name: mysql-config
+```
+
+where `SPRING_CONFIG_LOCATION=classpath:/,file:///config/mysql/` is set separately in the "env-config" map.
+
+A full `kustomization.yaml` looks like this:
+
+```
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- config.yaml
+- app.yaml
+patchesStrategicMerge:
+binding convention to work
+- binding.yaml
+configMapGenerator:
+  - name: env-config
+    behavior: merge
+    literals:
+      - SPRING_CONFIG_LOCATION=classpath:/,file:///config/mysql/
+```
+
+Where `config.yaml` just has the empty `env-config`:
+
+```
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: env-config
+```
+
+`app.yaml` is the application and deployer declarations, and `binding.yaml` is the patch above.
+
 ## Basic Observability with Prometheus
 
 ### Install Helm
