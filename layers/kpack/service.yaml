@@ -20,11 +20,8 @@ spec:
       containers:
       - name: app
         image: dsyer/template
-        envFrom:
-        - configMapRef:
-            name: env-config
         ports:
-        - containerPort: 8080
+        - containerPort: 3001
           name: http
 
 ---
@@ -38,6 +35,5 @@ spec:
     app: app
   ports:
     - protocol: TCP
-      port: 8080
-      targetPort: 8080
-      name: http
+      port: 3001
+      targetPort: 3001

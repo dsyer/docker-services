@@ -501,7 +501,7 @@ The resulting image can be run locally with docker, or deployed to kubernetes us
 To automate the build, and benefit from some neat tooling for managing base images and things like JDK patches, you can build in the cluster with https://github.com/pivotal/kpack[Kpack]. Kpack is a bunch of kubernetes resources that allow you to automatically build and maintain application images from within a cluster. Install it according to the instructions in the README (it's just a YAML file you can apply to the cluster). E.g.
 
 ```
-$ kubectl apply -f https://github.com/pivotal/kpack/releases/download/v0.0.4/release-0.0.4.yaml
+$ kubectl apply -f https://github.com/pivotal/kpack/releases/download/v0.0.5/release-0.0.5.yaml
 ```
 
 You need to define a "builder" for the cluster, similarly to the way we set up the default builder for `pack`:
@@ -511,12 +511,34 @@ $ kubectl apply -f -
 apiVersion: build.pivotal.io/v1alpha1
 kind: ClusterBuilder
 metadata:
-  name: sample-builder
+  name: default-builder
 spec:
   image: cloudfoundry/cnb:bionic
 ```
 
-You will also need a service account and a secret that allows the service account to push to a Docker registry. There is an example in the https://github.com/pivotal/kpack/blob/master/docs/tutorial.md[online tutorial] (steps 1 and 2). Create a service account called "service-account" in the default namespace, to keep it consistent with the sample YAML in the next paragraph.
+You will also need a service account and a secret that allows the service account to push to a Docker registry. There is an example in the https://github.com/pivotal/kpack/blob/master/docs/tutorial.md[online tutorial] (steps 1 and 2). Create a service account called "service-account" in the default namespace, to keep it consistent with the sample YAML in the next paragraph. For example:
+
+```
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+ name: service-account
+secrets:
+ - name: registry-credentials
+
+---
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: registry-credentials
+  annotations:
+    build.pivotal.io/docker: index.docker.io
+type: kubernetes.io/basic-auth
+stringData:
+  username: <dockerhub-username>
+  password: <dockerhub-password>
+```
 
 To start with you declare an "image" resource.
 

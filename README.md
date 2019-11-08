@@ -242,7 +242,19 @@ $ docker-credential-gcr configure-docker
 $ docker push gcr.io/$GCP_PROJECT/demo
 ```
 
-This last step actually installs "credHelpers" in your `~/.docker/config.json` (son it's permanent). It also slows down all docker builds (sigh) - see https://github.com/GoogleCloudPlatform/docker-credential-gcr/issues/11. You can speed it up a bit by pruning the "credHelpers" to just `gcr.io`. 
+This last step actually installs "credHelpers" in your `~/.docker/config.json` (son it's permanent). It also slows down all docker builds (sigh) - see https://github.com/GoogleCloudPlatform/docker-credential-gcr/issues/11. You can speed it up a bit by pruning the "credHelpers" to just `gcr.io`.
+
+## Service Discovery and DNS in Kubernetes
+
+```
+$ kubectl run -it --restart=Never --image=ubuntu:bionic shell /bin/bash
+/# cat /etc/resolv.conf
+search default.svc.cluster.local svc.cluster.local cluster.local
+nameserver 10.96.0.10
+options ndots:5
+```
+
+Shows that the local domain name is `default.svc.cluster.local` (where "default" is the namespace name). Services can be resolved as `<service>.<namespace>.svc.cluster.local`.
 
 ## Curl
 
@@ -314,6 +326,7 @@ Works!
 ## Multistage Build
 
 ```
+# syntax=docker/dockerfile:experimental
 FROM openjdk:8-alpine as build
 VOLUME /root/.m2
 COPY pom.xml /app/pom.xml
@@ -321,7 +334,7 @@ COPY src /app/src
 COPY .mvn /app/.mvn
 COPY mvnw /app/mvnw
 WORKDIR /app
-RUN ./mvnw clean install
+RUN --mount=type=cache,target=/root/.m2 ./mvnw clean install
 
 FROM openjdk:8-alpine
 VOLUME /tmp
@@ -331,7 +344,7 @@ COPY --from=build /app/target/dependency/BOOT-INF/classes /app
 ENTRYPOINT ["java","-Xmx128m","-Djava.security.egd=file:/dev/./urandom","-XX:TieredStopAtLevel=1","-noverify","-cp","app:app/lib/*","com.example.demo.Uppercase"]
 ```
 
-Issue is that the `/root/.m2` volume is not the same between builds, so there is no cache.
+The cache only works with buildkit.
 
 ## Quick Bootstrap Kubernetes Service
 
