@@ -10,19 +10,7 @@ spec:
         volumeMounts:
         - name: app-config
           mountPath: /app/config/
-        - name: podinfo
-          mountPath: /etc/podinfo
-          readOnly: false
       volumes:
       - name: app-config
         configMap:
           name: app-config
-      - name: podinfo
-        downwardAPI:
-          items:
-          - path: "labels.properties"
-            fieldRef:
-              fieldPath: metadata.labels
-          - path: "annotations"
-            fieldRef:
-              fieldPath: metadata.annotations
