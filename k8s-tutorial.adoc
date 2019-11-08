@@ -627,7 +627,7 @@ $ docker run -p 8080:8080 myorg/demo@sha256:8af467...
 
 ## Build and Deploy with Project Riff
 
-https://github.com/projectriff/riff[Riff] is a container runtime with strong links to `pack` and `kpack` for building images. There is a CLI to download, and a https://projectriff.io/docs/v0.4/getting-started/minikube[Getting Started Guide] (the Minikube version works with `kind` if you start from the section entitled https://projectriff.io/docs/v0.4/getting-started/minikube#install-helm[Install Helm]). Install the riff system in the cluster:
+https://github.com/projectriff/riff[Riff] is a container runtime with strong links to `pack` and `kpack` for building images. It can build and deploy "functions", and also "applications" (HTTP endpoints) and you can also bring your own container. There is a CLI to download, and a https://projectriff.io/docs/v0.4/getting-started/minikube[Getting Started Guide] (the Minikube version works with `kind` if you start from the section entitled https://projectriff.io/docs/v0.4/getting-started/minikube#install-helm[Install Helm]). Install the riff system in the cluster:
 
 ```
 $ helm repo add projectriff https://projectriff.storage.googleapis.com/charts/releases
@@ -650,7 +650,9 @@ $ riff application create demo --image myorg/myapp --local-path ./target/*.jar
 Created application "demo"
 ```
 
-NOTE: like with `pack` you can either build from source or from the executable jar file.
+NOTE: Like with `pack` you can either build from source or from the executable jar file. In fact, riff is using exactly the same mechanism to build the container, embedding the same libraries and using the same builders. Riff has a custom builder for functions, but applications use the off-the-self Cloud Foundry builder.
+
+NOTE: Riff can also build in the cluster, replacing `--local-path` with a `--git-repo`. We are focusing here on the "local" developer experience - no remote git repo is needed and everything can be built on the desktop.
 
 At this point it is not running, but the image has been pushed to dockerhub, and there is a resource in the cluster that knows how to locate it:
 
@@ -689,7 +691,7 @@ replicaset.apps/demo-deployer-6b4886c95c   1         1         1       2m46s
 ...
 ```
 
-So we can connect to it using a forward (for instance):
+So we can connect to it using a port forward (for instance):
 
 ```
 $ kubectl port-forward svc/demo-deployer 8080:80
@@ -697,7 +699,7 @@ $ curl localhost:8080
 Hello World!
 ```
 
-To update the application we delete it and recreate:
+To update the application we delete it and recreate. After making a change to the jar file:
 
 ```
 $ riff application delete demo
@@ -708,7 +710,7 @@ Once the image is updated, the cluster will launch a new pod and switch traffic 
 
 ### Deploying an Application without Riff CLI
 
-The Riff CLI is just a convenience wrapper around a container build, plus a few lines of YAML. If you already bbuilt the container a different way, like with a Dockerfile, you can create the YAML manually and simply apply it with `kubcetl`. The two `riff` invocations result in 2 API objects:
+The Riff CLI is just a convenience wrapper around a container build, plus a few lines of YAML. If you already built the container a different way, like with a Dockerfile, you can create the YAML manually and simply apply it with `kubcetl`. The two `riff` invocations result in 2 API objects:
 
 ```
 $ kubctl apply -f -
@@ -735,13 +737,69 @@ spec:
     - name: handler
 ```
 
-### PetClinic with MySQL on Riff
-
-If you are running a MySQL service already on the cluster you can bind to it using the `--env` and `--envFrom` options on the `riff core deployer create` command. Or you can go the YAML route and bind to the configuration in the deployer spec. Example:
+Since we built our own container, instead of `Application` and `applicationRef` we could have used `Container` and `containerRef` with the same effect, i.e:
 
 ```
 apiVersion: build.projectriff.io/v1alpha1
-kind: Application
+kind: Container
+metadata:
+  name: demo
+spec:
+  image: myorg/myapp
+
+---
+
+apiVersion: core.projectriff.io/v1alpha1
+kind: Deployer
+metadata:
+  name: demo
+  labels:
+    created: manual
+spec:
+  build:
+    containerRef: demo
+  template:
+    containers:
+    - name: handler
+```
+
+If there is a change in the container, we need to delete the corresponding resource and re-create it:
+
+```
+$ kubectl delete container demo
+$ kubectl apply -f -
+apiVersion: build.projectriff.io/v1alpha1
+kind: Container
+metadata:
+  name: demo
+spec:
+  image: myorg/myapp
+```
+
+If we had been using an `Application` and building using the riff builder in the cluster then there would be no need to delete and re-create. But if the container is built outside the cluster then we need to make a change so the feedback loop can kick off. An alternative would be to use unique labels on the containers, instead of "latest". E.g. `myorg/myapp:v1` and `myorg/myapp:v2`. You can see changes being detected in the status of the container, e.g:
+
+```
+$ kubectl describe container demo
+...
+  Latest Image:            index.docker.io/myorg/myapp@sha256:18cb7be5a...
+  Observed Generation:     6
+  Target Image:            myorg/myapp
+Events:
+  Type    Reason        Age                 From                  Message
+  ----    ------        ----                ----                  -------
+  Normal  Updated       20m (x4 over 97m)   container-controller  Updated Container "demo"
+
+```
+
+If a new container is detected it will cause the deployer to do a rolling update on the application replicaset.
+
+### PetClinic with MySQL on Riff
+
+If you are running a MySQL service already on the cluster you can bind to it using the `--env` and `--envFrom` options on the `riff core deployer create` command. Or you can create some YAML and bind to the configuration in the deployer spec. Example:
+
+```
+apiVersion: build.projectriff.io/v1alpha1
+kind: Container
 metadata:
   name: petclinic
 spec:
@@ -757,7 +815,7 @@ metadata:
     created: manual
 spec:
   build:
-    applicationRef: petclinic
+    containerRef: petclinic
   template:
     containers:
     - name: handler
@@ -769,9 +827,9 @@ spec:
             name: env-config
 ```
 
-Combine that with a config map called "env-config" that was created by your MySQL service, and you might have a functional Pet Clinic.
+Combine that with a config map called "env-config" that was created by your MySQL service, and you have a functional Pet Clinic.
 
-The deployer spec is just a pod spec, so you can add other things as well, like volume mounts. If you have an `application.properties` file created by the MySQL service manifest in a config map called "mysql-config", then this might be a good way to read it into the Spring Boot application. Here's a `kustomize` patch for the deployer:
+The deployer spec is just a pod spec, so you can add other things as well, like volume mounts. If you have an `application.properties` file in a config map called "mysql-config", then this might be a good way to read it into the Spring Boot application. Here's a `kustomize` patch for the deployer:
 
 ```
 apiVersion: core.projectriff.io/v1alpha1
@@ -807,7 +865,7 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
 - config.yaml
-- app.yaml
+- deployer.yaml
 patchesStrategicMerge:
 binding convention to work
 - binding.yaml
@@ -827,7 +885,7 @@ metadata:
   name: env-config
 ```
 
-`app.yaml` is the application and deployer declarations, and `binding.yaml` is the patch above.
+`deployer.yaml` is the container and deployer declarations, and `binding.yaml` is the patch with the volume mount.
 
 ## Basic Observability with Prometheus
 
