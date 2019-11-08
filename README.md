@@ -1,4 +1,26 @@
-A collection of docker-compose.yml files useful for running data services (e.g. redis, rabbit, mongo) locally.
+
+Under `layers`: a collection of `kustomize` templates for running Spring Boot applications. Under `compose`: a collection of docker-compose.yml files useful for running data services (e.g. redis, rabbit, mongo) locally.
+
+## Kustomize Layers
+
+Examples:
+
+```
+$ kustomize build layers/samples/petclinic | kubectl apply -f -
+```
+
+Another one with the source code for the Spring Boot application under `demo`:
+
+```
+$ cd demo
+$ mvn install
+$ docker build -t dsyer/demo .
+$ kapp deploy -a demo -f $(kustomize build k8s/dev)
+```
+
+See [K8s Tutorial](k8s-tutorial.adoc) for more detail.
+
+## Compose Service Templates
 
 To run in a VM or a remote platform you can use `docker-machine` and an ssh tunnel to map the ports to localhost. E.g. for redis
 
@@ -347,4 +369,23 @@ $ kubectl run --restart=Never -t -i --rm ngrok --image=gcr.io/kuar-demo/ngrok --
 
 `ngrok` starts and announces a public http and https service that connects to your "demo" service.
 
-## 
+## Using NodePort Services in Kind
+
+> NOTE: It's easier TBH to just use `ClusterIP` and `kubectl port-forward` to connect to a service in a kind cluster.
+
+Kind only exposes one port in the cluster to the host machine (the kubernetes API). If you deploy a service in the cluster with `type: NodePort` it will not be accessible unless you tunnel to it. You can do that with `alpine/socat`:
+
+```
+$ kubectl get service dev-app
+NAME                 TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
+service/dev-app      NodePort    10.97.254.57     <none>        8080:31672/TCP   22m
+
+$ docker run -p 127.0.0.1:8080:8080 --link kind-control-plane:target alpine/socat tcp-listen:8080,fork,reuseaddr tcp-connect:target:31672
+```
+
+The service is now available on the host on port 8080. You can extract that ephemeral port using `kubectl`:
+
+```
+$ kubectl get service dev-app -o=jsonpath="{.spec.ports[?(@.port == 8080)].nodePort}"
+31672
+```

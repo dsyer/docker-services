@@ -73,6 +73,9 @@
 								<copy todir="k8s/gcr/vendor/libs" failonerror="false">
 									<fileset dir="k8s/libs"/>
 								</copy>
+								<copy todir="k8s/node/vendor/libs" failonerror="false">
+									<fileset dir="k8s/libs"/>
+								</copy>
 							</target>
 						</configuration>
 						<goals>
