@@ -380,7 +380,7 @@ $ kubectl get service dev-app
 NAME                 TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
 service/dev-app      NodePort    10.97.254.57     <none>        8080:31672/TCP   22m
 
-$ docker run -p 127.0.0.1:8080:8080 --link kind-control-plane:target alpine/socat tcp-listen:8080,fork,reuseaddr tcp-connect:target:31672
+$ docker run -p 127.0.0.1:8080:80 --link kind-control-plane:target alpine/socat tcp-listen:80,fork,reuseaddr tcp-connect:target:31672
 ```
 
 The service is now available on the host on port 8080. You can extract that ephemeral port using `kubectl`:
