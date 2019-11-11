@@ -10,4 +10,5 @@ spec:
     kind: ClusterBuilder
   source:
     blob:
-      url: http://server-app.default.svc.cluster.local:3001/app.jar
+      # Build a fat jar and push it to this server using `curl server:3001/app.0.jar --data-binary @myapp.jar ...`
+      url: http://server-app:3001/app.0.jar

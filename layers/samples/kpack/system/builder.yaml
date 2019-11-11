@@ -1,0 +1,29 @@
+apiVersion: build.pivotal.io/v1alpha1
+kind: ClusterBuilder
+metadata:
+  name: default-builder
+spec:
+  image: cloudfoundry/cnb:bionic
+
+---
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+ name: service-account
+secrets:
+ - name: registry-credentials
+
+---
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: registry-credentials
+  annotations:
+    build.pivotal.io/docker: index.docker.io
+type: kubernetes.io/basic-auth
+stringData:
+  # cat builder.yaml | DOCKERHUB_USER=... DOCKERHUB_PASSWORD=... envsubst
+  username: ${DOCKERHUB_USER}
+  password: ${DOCKERHUB_PASSWORD}

@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: static
+  name: static
+spec:
+  selector:
+    matchLabels:
+      app: static
+  template:
+    metadata:
+      labels:
+        app: static
+    spec:
+      containers:
+      - image: dsyer/server
+        name: static
+        volumeMounts:
+        - name: tmp
+          mountPath: /tmp
+        ports:
+        - containerPort: 3001
+      volumes:
+      - name: tmp
+        persistentVolumeClaim:
+          claimName: tmp
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: tmp
+  namespace: default
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-path
+  resources:
+    requests:
+      storage: 100Mi
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: static
+  name: static
+spec:
+  ports:
+  - name: 3001-3001
+    port: 3001
+    protocol: TCP
+    targetPort: 3001
+  selector:
+    app: static
+  type: ClusterIP

@@ -1,0 +1,16 @@
+A simple HTTP server that creates and serves static content from a temp directory.
+
+* *GET* Serves content from /tmp/static. E.g. `GET /index.html` serves a file `/tmp/static/index.html` (if it exists).
+
+* *POST* Uploads content. E.g.
+
+        $ curl http://localhost:3001/foo.json
+        404 page not found
+        $ curl http://localhost:3001/foo.json -d @-
+        {"Hello":"Foo"}
+        $ curl http://localhost:3001/foo.json
+        {"Hello":"Foo"}
+
+* *DELETE* Deletes content (recursively).
+
+If you POST a binary file (like a jar) remember to use `curl ... --data-binary` (not `-d`).

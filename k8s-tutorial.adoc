@@ -647,6 +647,75 @@ $ docker run -p 8080:8080 myorg/demo@sha256:8af467...
 2019-10-18 08:52:39.287  INFO 1 --- [           main] com.example.demo.DemoApplication         : Started DemoApplication in 0.948 seconds (JVM running for 1.087)
 ```
 
+### Building an Image from a JAR File
+
+Instead of building from a github source, you can build from an HTTP(S) URL that points to an archive. The archive contains the source code of your application, or it can be a Spring Boot executable JAR. You could use that to build from an artifactory repository, for instance. We can try it out using a simple HTTP server that accepts data on POST and serves it back on a GET. Such a server could be written easily in any language, but https://github.com/dsyer/docker-services/tree/master/server[an example] is available in dockerhub as `dsyer/server`, listening on port 3001. So we deploy this container as a service in the cluster:
+
+```
+$ kubectl apply -f -
+apiVersion: v1
+kind: Service
+metadata:
+  name: server-app
+spec:
+  ports:
+  - port: 3001
+    protocol: TCP
+    targetPort: 3001
+  selector:
+    app: app
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: app
+  name: server-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app
+  template:
+    metadata:
+      labels:
+        app: app
+    spec:
+      containers:
+      - image: dsyer/server
+        name: app
+        ports:
+        - containerPort: 3001
+          name: http
+```
+
+then expose the service on the host using `kubectl port-forward svc/server-app 3001:3001`. At this point we can push a JAR file up into the server:
+
+```
+$ curl -v localhost:3001/app.jar --data-binary @target/docker-demo-0.0.1-SNAPSHOT.jar
+```
+
+at which point the JAR is available from the server at `/app.jar`. So we can create the image resource like this:
+
+```
+kubectl apply -f -
+apiVersion: build.pivotal.io/v1alpha1
+kind: Image
+metadata:
+  name: demo
+spec:
+  tag: dsyer/demo
+  serviceAccount: service-account
+  builder:
+    name: default-builder
+    kind: ClusterBuilder
+  source:
+    blob:
+      url: http://server-app:3001/app.jar
+```
+
+Once that image resource is noticed by `kpack` it triggers a build and the container is pushed to the registry configured in the builder. To create a new image you need to change the URL and re-apply the YAML (there is currently no way to monitor a blob source for changes). It's fine to re-use URLs though, so you can always build the "latest" version using a blue-green naming convention, alternating between the two.
+
 ## Build and Deploy with Project Riff
 
 https://github.com/projectriff/riff[Riff] is a container runtime with strong links to `pack` and `kpack` for building images. It can build and deploy "functions", and also "applications" (HTTP endpoints) and you can also bring your own container. There is a CLI to download, and a https://projectriff.io/docs/v0.4/getting-started/minikube[Getting Started Guide] (the Minikube version works with `kind` if you start from the section entitled https://projectriff.io/docs/v0.4/getting-started/minikube#install-helm[Install Helm]). Install the riff system in the cluster:
