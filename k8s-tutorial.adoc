@@ -220,6 +220,8 @@ To get started you need a base configuration, for which we can use the `deployme
 $ mkdir -p k8s/base
 $ mv deployment.yaml k8s/base
 $ cat > k8s/base/kustomization.yaml 
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
 resources:
 - deployment.yaml
 ```
@@ -239,6 +241,62 @@ The merged YAML is trivial in this case - it is just a copy of the `deployment.y
 
 ```
 $ kustomize build k8s/base/ | kubectl apply -f -
+```
+
+### Extracting Common Labels
+
+The `deployment.yaml` that we have is fine, but it's not very portable - you can only use it once in the same namespace because of the hard-coded labels and selectors. Kustomize has a feature that lifts that restriction, and simplifies the YAML. We can use this `kustomization.yaml` (note the addition of the `commonLabels`):
+
+```
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- deployment.yaml
+commonLabels:
+  app: demo
+```
+
+with the labels and selectors removed from `deployment.yaml`:
+
+```
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+      - name: app
+        image: myorg/myapp
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app
+spec:
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+      name: http
+```
+
+We can actually leave the labels and selectors in there if we want, and then the `deployment.yaml` is usable as a standalone manifest. Kustomize replaces them if we ask it to, but doesn't break if we don't.
+
+The image can also be overridden in a special way in `kustomization.yaml`:
+
+```
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- deployment.yaml
+commonLabels:
+  app: demo
+images:
+  - name: myorg/myapp
+    newName: myorg/demo
 ```
 
 ### Add a New Environment

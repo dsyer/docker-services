@@ -8,15 +8,15 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: mysql
+      mysql: mysql
   template:
     metadata:
       labels:
-        app: mysql
+        mysql: mysql
     spec:
       containers:
         - image: mysql:5.6
-          name: mysql
+          mysql: mysql
           env:
             - name: MYSQL_ROOT_PASSWORD
               value: password
@@ -40,9 +40,9 @@ kind: Service
 metadata:
   name: mysql
   labels:
-    app: mysql
+    mysql: mysql
 spec:
   ports:
     - port: 3306
   selector:
-    app: mysql
+    mysql: mysql

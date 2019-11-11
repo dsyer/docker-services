@@ -1,21 +1,10 @@
-# $ kubectl apply -f deployment.yaml
-# $ kubectl port-forward svc/app 8080:8080
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  labels:
-    app: app
   name: app
 spec:
   replicas: 1
-  selector:
-    matchLabels:
-      app: app
   template:
-    metadata:
-      labels:
-        app: app
     spec:
       containers:
       - name: app
@@ -23,9 +12,6 @@ spec:
         envFrom:
         - configMapRef:
             name: env-config
-        ports:
-        - containerPort: 8080
-          name: http
 
 ---
 
@@ -34,8 +20,6 @@ kind: Service
 metadata:
   name: app
 spec:
-  selector:
-    app: app
   ports:
     - protocol: TCP
       port: 8080
