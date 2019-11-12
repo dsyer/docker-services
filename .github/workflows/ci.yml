@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  push:
+    branches:
+    - '**'
+    - '!dependabot/**'
+  pull_request: {}
+
+jobs:
+
+  fats:
+    name: FATS
+    if: success() && github.event_name == 'push'
+    strategy:
+      matrix:
+        config:
+        - os: ubuntu-latest
+          qualifier: kind
+          cluster: kind
+          registry: docker-daemon
+      fail-fast: false
+    runs-on: ${{ matrix.config.os }}
+    env:
+      CLUSTER: ${{ matrix.config.cluster }}
+      REGISTRY: ${{ matrix.config.registry }}
+    steps:
+      - uses: actions/checkout@v1
+      - name: Setup env
+        run: |
+          job=$(date +%s) # TODO use something that is assigned by CI to guarantee uniqueness
+          echo "JOB_ID=${job}"
+          echo "##[set-env name=CLUSTER_NAME]cli-${job}-${{ matrix.config.qualifier }}"
+          echo "##[set-env name=NAMESPACE]cli-${job}-${{ matrix.config.qualifier }}"
+        shell: bash
+      - name: Run FATS
+        run: .github/workflows/fats.sh
+        shell: bash
+      - name: Collect diagnostics
+        run: .github/workflows/diagnostics.sh
+        shell: bash
+        if: always()
+      - name: Cleanup FATS
+        run: .github/workflows/fats-cleanup.sh
+        shell: bash
+        if: always()
