@@ -2,6 +2,10 @@
 
 set -o nounset
 
+export CLUSTER=${CLUSTER-kind}
+export REGISTRY=${REGISTRY-docker-daemon}
+export NAMESPACE=${NAMESPACE-fats}
+
 fats_dir=`dirname "${BASH_SOURCE[0]}"`/fats
 
 uninstall_chart() {
