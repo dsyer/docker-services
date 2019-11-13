@@ -1,8 +1,8 @@
 #!/bin/bash
 
 dir=${1}
-refspec=${2:-master}
-repo=${3:-projectriff/fats}
+repo=${2:-projectriff/fats}
+refspec=${3:-master}
 
 if [ ! -f $dir ]; then
   mkdir -p $dir

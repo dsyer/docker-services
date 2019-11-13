@@ -10,7 +10,7 @@ spec:
           # petclinic moves base of actuator endpoints
           livenessProbe:
             httpGet:
-              path: /management/info
+              path: /manage/info
           readinessProbe:
             httpGet:
-              path: /management/health
+              path: /manage/health

@@ -18,8 +18,8 @@ readonly slug=${version}-${git_timestamp}-${git_sha:0:16}
 # fetch FATS scripts
 fats_dir=`dirname "${BASH_SOURCE[0]}"`/fats
 fats_repo="dsyer/fats"
-fats_refspec=fac7395 # master as of 2019-11-07
-source `dirname "${BASH_SOURCE[0]}"`/fats-fetch.sh $fats_dir $fats_refspec $fats_repo
+fats_refspec=b220854 # master as of 2019-11-07
+source `dirname "${BASH_SOURCE[0]}"`/fats-fetch.sh $fats_dir $fats_repo $fats_refspec
 source $fats_dir/.util.sh
 
 # start FATS

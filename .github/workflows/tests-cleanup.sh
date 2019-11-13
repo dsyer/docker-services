@@ -1,8 +1,6 @@
 #!/bin/bash
 
-set -o errexit
 set -o nounset
-set -o pipefail
 
 NAMESPACE=${NAMESPACE-fats}
 
@@ -10,9 +8,11 @@ NAMESPACE=${NAMESPACE-fats}
 fats_dir=`dirname "${BASH_SOURCE[0]}"`/fats
 source $fats_dir/.util.sh
 
-# run test functions
-for test in command; do
-  echo "##[group]Clean up test $test"
+export KAPP_NAMESPACE=${NAMESPACE}
 
+# run test functions
+for test in simple enhanced petclinic; do
+  echo "##[group]Clean up test $test"
+      kapp delete -y -a $test
   echo "##[endgroup]"
 done
