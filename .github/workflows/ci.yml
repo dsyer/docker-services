@@ -7,6 +7,9 @@ on:
     - '!dependabot/**'
   pull_request: {}
 
+env:
+  FATS_DIR: ".github/workflows/fats"
+
 jobs:
 
   fats:
@@ -33,14 +36,26 @@ jobs:
           echo "##[set-env name=CLUSTER_NAME]cli-${job}-${{ matrix.config.qualifier }}"
           echo "##[set-env name=NAMESPACE]cli-${job}-${{ matrix.config.qualifier }}"
         shell: bash
-      - name: Run FATS
+      - name: Fetch FATS
         run: .github/workflows/fats.sh
         shell: bash
+        timeout-minutes: 10
+      - name: Run Tests
+        run: .github/workflows/run.sh
+        shell: bash
+        timeout-minutes: 30
       - name: Collect diagnostics
-        run: .github/workflows/diagnostics.sh
+        run: ${FATS_DIR}/diagnostics.sh
         shell: bash
         if: always()
+        timeout-minutes: 1
+      - name: Cleanup Tests
+        run: .github/workflows/cleanup.sh
+        shell: bash
+        if: always()
+        timeout-minutes: 10
       - name: Cleanup FATS
-        run: .github/workflows/fats-cleanup.sh
+        run: ${FATS_DIR}/cleanup.sh
         shell: bash
         if: always()
+        timeout-minutes: 30
