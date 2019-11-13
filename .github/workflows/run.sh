@@ -31,7 +31,7 @@ done
 
 for test in simple enhanced petclinic; do
   echo "##[group]Deploy app $test"
-    kapp deploy --wait-check-interval 10s --wait-timeout 20m -y -a $test \
+    kapp deploy --wait-check-interval 10s --wait-timeout 30m -y -a $test \
       -f <(kustomize build layers/samples/${test} --load_restrictor none)
     kapp delete -y -a $test
   echo "##[endgroup]"
