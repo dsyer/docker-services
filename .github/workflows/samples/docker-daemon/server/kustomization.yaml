@@ -5,4 +5,4 @@ resources:
 - ../../../../../server/kubernetes/base
 images:
   - name: dsyer/server
-    newName: registry.kube-system.svc.cluster.local:5000/server:fats
+    newName: ${IMAGE}

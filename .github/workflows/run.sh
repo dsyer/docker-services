@@ -10,7 +10,7 @@ export NAMESPACE=${NAMESPACE-fats}
 
 # fetch FATS scripts
 fats_dir=`dirname "${BASH_SOURCE[0]}"`/fats
-source $fats_dir/.util.sh
+source ${fats_dir}/.configure.sh
 $fats_dir/install.sh kustomize
 $fats_dir/install.sh kapp
 
@@ -34,8 +34,20 @@ done
 
 for test in simple enhanced petclinic server; do
   echo "##[group]Deploy app $test"
+    kubectl apply \
+      -f <(kustomize build samples/${REGISTRY}/${test} --load_restrictor none) \
+      --dry-run --namespace ${NAMESPACE}
+  echo "##[endgroup]"
+done
+
+for test in simple enhanced petclinic server; do
+  echo "##[group]Deploy app $test"
+    name=demo
+    if [ "${test}" == "petclinic" ] || [ "${test}" == "server" ]; then
+      name=${test}
+    fi
     kapp deploy --wait-check-interval 10s --wait-timeout 30m -y -a $test \
-      -f <(kustomize build samples/${REGISTRY}/${test} --load_restrictor none)
+      -f <(kustomize build samples/${REGISTRY}/${test} --load_restrictor none | IMAGE=$(fats_image_repo ${name}) envsubst)
     kapp delete -y -a $test
   echo "##[endgroup]"
 done

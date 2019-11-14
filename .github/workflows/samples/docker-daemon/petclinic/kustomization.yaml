@@ -5,4 +5,4 @@ resources:
 - ../../../../../layers/samples/simple
 images:
   - name: dsyer/petclinic
-    newName: registry.kube-system.svc.cluster.local:5000/petclinic:fats
+    newName: ${IMAGE}

@@ -5,4 +5,4 @@ resources:
 - ../../../../../layers/samples/simple
 images:
   - name: dsyer/demo
-    newName: registry.kube-system.svc.cluster.local:5000/demo:fats
+    newName: ${IMAGE}
