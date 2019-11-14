@@ -16,7 +16,7 @@ readonly slug=${version}-${git_timestamp}-${git_sha:0:16}
 # fetch FATS scripts
 fats_dir=`dirname "${BASH_SOURCE[0]}"`/fats
 fats_repo="dsyer/fats"
-fats_refspec=4bc38a1 # master as of 2019-11-07
+fats_refspec=eb2963a # master as of 2019-11-07
 if [ ! -f ${fats_dir} ]; then
   mkdir -p ${fats_dir}
   curl -L https://github.com/${fats_repo}/archive/${fats_refspec}.tar.gz | \
