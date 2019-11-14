@@ -27,6 +27,7 @@ jobs:
     env:
       CLUSTER: ${{ matrix.config.cluster }}
       REGISTRY: ${{ matrix.config.registry }}
+      DOCKER_BUILDKIT: 1
     steps:
       - uses: actions/checkout@v1
       - uses: actions/setup-java@v1

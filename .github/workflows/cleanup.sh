@@ -11,7 +11,7 @@ source $fats_dir/.util.sh
 export KAPP_NAMESPACE=${NAMESPACE}
 
 # run test functions
-for test in simple enhanced petclinic; do
+for test in simple enhanced petclinic server; do
   echo "##[group]Clean up test $test"
       kapp delete -y -a $test
   echo "##[endgroup]"
