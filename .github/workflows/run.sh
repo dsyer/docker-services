@@ -26,6 +26,14 @@ for test in base actuator prometheus mysql; do
   echo "##[endgroup]"
 done
 
+for test in base actuator prometheus mysql; do
+  echo "##[group]Apply kustomize layers/$test"
+    kubectl apply \
+      -f <(kustomize build ${basedir}/layers/${test} --load_restrictor none) \
+      --dry-run --namespace ${NAMESPACE}
+  echo "##[endgroup]"
+done
+
 for test in simple enhanced petclinic; do
   echo "##[group]Run kustomize sample $test"
     kustomize build ${basedir}/layers/samples/${test} --load_restrictor none
@@ -33,7 +41,7 @@ for test in simple enhanced petclinic; do
 done
 
 for test in simple enhanced petclinic server; do
-  echo "##[group]Deploy app $test"
+  echo "##[group]Apply app $test"
     kubectl apply \
       -f <(kustomize build samples/${REGISTRY}/${test} --load_restrictor none) \
       --dry-run --namespace ${NAMESPACE}
