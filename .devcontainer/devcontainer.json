@@ -12,7 +12,7 @@
 		"--cap-add=SYS_PTRACE", "--security-opt", "seccomp=unconfined",
 
 		"-v","/var/run/docker.sock:/var/run/docker.sock",
-		"--mount", "type=bind,source=${env:HOME}/.docker,target=/home/root/.docker",
+		"--mount", "type=bind,source=${env:HOME}/.docker,target=/home/vscode/.docker",
 
 		"-e", "CLUSTER=kind",
 		"-e", "REGISTRY=docker-daemon",

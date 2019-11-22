@@ -8,9 +8,9 @@ spec:
       containers:
       - name: app
         volumeMounts:
-        - name: mysql-config
-          mountPath: /config/mysql
+        - name: mysql
+          mountPath: /config/bindings/mysql/meta
       volumes:
-      - name: mysql-config
+      - name: mysql
         configMap:
           name: mysql-config
