@@ -21,4 +21,4 @@ configMapGenerator:
   - name: env-config
     behavior: merge
     literals:
-      - SPRING_CONFIG_LOCATION=classpath:/,file:///config/mysql/
+      - SPRING_CONFIG_LOCATION=classpath:/,file:///config/bindings/mysql/meta
