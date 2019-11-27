@@ -1,6 +1,6 @@
 :toc:
 
-## Setting Up a Kubernetes Cluster
+== Setting Up a Kubernetes Cluster
 
 There are many choices for how to run kubernetes. One of the simplest and least resource intensive is to use the `kind` tool from https://github.com/kubernetes-sigs/kind[Kubernetes SIG], which runs a really slim cluster in a docker image.
 
@@ -34,7 +34,7 @@ Most of what follows would work just fine if you create your cluster in some oth
 
 NOTE: If you have limited resources, but have an internet connection, you can get a nice playground for trying out kubernetes using the https://kubernetes.io/docs/tutorials/kubernetes-basics[bootcamp tutorial]. You get a kubernetes cluster and a bash terminal with kubectl, docker, java and git. All or most of the examples here should work there, if you don't want to use `kind`.
 
-### Connecting to Kubernetes from Inside a Container
+=== Connecting to Kubernetes from Inside a Container
 
 If you are using kind to run your cluster, then the kubernetes API is exposed on localhost on a random port. It is also exposed on the local docker network on port 6443. On Linux (not sure about Mac and Windows) this means that you can connect to it from another container using that address, and `kind` will even tell you how.
 
@@ -59,7 +59,7 @@ Using this you can launch VSCode on a project using the remote container extensi
 
 NOTE: Rancher has another dockerized kubernetes cluster called https://github.com/rancher/k3s[k3s] which works in a similar way to kind. They don't have the "internal" flag though, so it's harder to use from another container
 
-## Build and Containerize a Spring Boot Application
+== Build and Containerize a Spring Boot Application
 
 Create a new application using https://start.spring.io or re-use an existing one. We will assume that you have an app that listens on port 8080 and has an HTTP endpoint, e.g.
 
@@ -117,7 +117,7 @@ ENTRYPOINT ["sh", "-c", "java -noverify -cp /app:/app/lib/ \
   com.example.demo.DemoApplication ${0} ${@}"]
 ```
 
-## Quickstart With Kubernetes
+== Quickstart With Kubernetes
 
 A nice quick way to deploy the application to kubernetes is to generate a YAML descriptor using `kubectl --dry-run`. We need a deployment and a service:
 
@@ -185,7 +185,7 @@ $ curl localhost:8080
 Hello World!
 ```
 
-### Making Changes
+=== Making Changes
 
 One of the benefits of having a YAML descriptor of your application in source control is that you can use it to trigger an upgrade. The workflow would be something like
 
@@ -196,7 +196,7 @@ One of the benefits of having a YAML descriptor of your application in source co
 
 The deployment notices that it has a new image to install, so it creates a new pod, given that it has the default `ImagePullPolicy: Always`. Once the new pod is up and running it shuts down the old one. (Steps 2 and 3 above would be combined into one if you used jib instead of docker.)
 
-### Quick and Dirty Ingress with Ngrok
+=== Quick and Dirty Ingress with Ngrok
 
 If you use `kubectl port-forward` to create an SSH tunnel to the service you can only access it from localhost. If, instead, you want to share the app on the internet or LAN, you can get something up and running really quickly with `ngrok`. Example:
 
@@ -208,7 +208,7 @@ When `ngrok` starts it announces on the console a public http and https service 
 
 NOTE: A global tunnel on `ngrok` is certainly not recommended for production apps, but is quite handy at development time.
 
-## Organizing YAML with Kustomize
+== Organizing YAML with Kustomize
 
 As soon as you need to deploy your application to more than one cluster (e.g. local, test and production environments), it becomes challenging to maintain all the different options in YAML. Ideally you want to be able to create all the options and commit them to source control. There are many options to maintain and organize YAML files, many of which involve templating. Templating means replacing placeholders in files that you create with different values at deployment time. The problem with this that the template files tend not to be valid on their own, and they are hard to read, test and maintain.
 
@@ -243,7 +243,7 @@ The merged YAML is trivial in this case - it is just a copy of the `deployment.y
 $ kustomize build k8s/base/ | kubectl apply -f -
 ```
 
-### Extracting Common Labels
+=== Extracting Common Labels
 
 The `deployment.yaml` that we have is fine, but it's not very portable - you can only use it once in the same namespace because of the hard-coded labels and selectors. Kustomize has a feature that lifts that restriction, and simplifies the YAML. We can use this `kustomization.yaml` (note the addition of the `commonLabels`):
 
@@ -299,7 +299,7 @@ images:
     newName: myorg/demo
 ```
 
-### Add a New Environment
+=== Add a New Environment
 
 To add a new environment we just create a patch and a new `kustomization.yaml`:
 
@@ -355,7 +355,7 @@ $ kustomize build k8s/prod
 
 `kustomize` matches the `kind` and `metadata.name` in the patch with the deployment in the base, adding the probes. You could also change the container image, port mapping, volume mounts, etc. (anything that might change between environments).
 
-### Add a Config Map
+=== Add a Config Map
 
 A useful customization is to add a config map with a file called `application.properties` so that Spring Boot can consume it easily. The config map isn't in the base deployment, so we add it as a resource:
 
@@ -417,7 +417,7 @@ $ curl localhost:8080/actuator/info
 {"name":"demo"}
 ```
 
-## Application Metadata with Kapp
+== Application Metadata with Kapp
 
 There are quite a few tools available that manage a set of kubernetes resources, applying a label to them, and allowing users to adjust the resources as a group. The lightest weight of these tools is probably `kapp` (https://github.com/k14s/kapp[from k14s]). It works without admin privileges and does not use custom CRDs, so you can use it as a regular user in any namespace you have access to.
 
@@ -487,7 +487,7 @@ $ kapp deploy -a demo -f <(kustomize build k8s/demo)
 
 (A pipe doesn't work because of the `[yN]` prompt.)
 
-## Building an Image with Pack
+== Building an Image with Pack
 
 The https://github.com/buildpack/pack[Pack CLI] can be used to build a container image with https://buildpacks.io[Cloud Native Buildpacks] (as an alternative to `jib`, or docker). There are many advantages to using Cloud Native Buildpacks, most of which are related to the ability in principle to patch images without rebuilding the app or even changing the application code.
 
@@ -554,7 +554,7 @@ $ pack build myorg/demo -p target/*.jar
 
 The resulting image can be run locally with docker, or deployed to kubernetes using the YAML we created already.
 
-## Building in the Cluster with Kpack
+== Building in the Cluster with Kpack
 
 To automate the build, and benefit from some neat tooling for managing base images and things like JDK patches, you can build in the cluster with https://github.com/pivotal/kpack[Kpack]. Kpack is a bunch of kubernetes resources that allow you to automatically build and maintain application images from within a cluster. Install it according to the instructions in the README (it's just a YAML file you can apply to the cluster). E.g.
 
@@ -705,7 +705,7 @@ $ docker run -p 8080:8080 myorg/demo@sha256:8af467...
 2019-10-18 08:52:39.287  INFO 1 --- [           main] com.example.demo.DemoApplication         : Started DemoApplication in 0.948 seconds (JVM running for 1.087)
 ```
 
-### Building an Image from a JAR File
+=== Building an Image from a JAR File
 
 Instead of building from a github source, you can build from an HTTP(S) URL that points to an archive. The archive contains the source code of your application, or it can be a Spring Boot executable JAR. You could use that to build from an artifactory repository, for instance. We can try it out using a simple HTTP server that accepts data on POST and serves it back on a GET. Such a server could be written easily in any language, but https://github.com/dsyer/docker-services/tree/master/server[an example] is available in dockerhub as `dsyer/server`, listening on port 3001. So we deploy this container as a service in the cluster:
 
@@ -774,7 +774,7 @@ spec:
 
 Once that image resource is noticed by `kpack` it triggers a build and the container is pushed to the registry configured in the builder. To create a new image you need to change the URL and re-apply the YAML (there is currently no way to monitor a blob source for changes). It's fine to re-use URLs though, so you can always build the "latest" version using a blue-green naming convention, alternating between the two.
 
-## Build and Deploy with Project Riff
+== Build and Deploy with Project Riff
 
 https://github.com/projectriff/riff[Riff] is a container runtime with strong links to `pack` and `kpack` for building images. It can build and deploy "functions", and also "applications" (HTTP endpoints) and you can also bring your own container. There is a CLI to download, and a https://projectriff.io/docs/v0.4/getting-started/minikube[Getting Started Guide] (the Minikube version works with `kind` if you start from the section entitled https://projectriff.io/docs/v0.4/getting-started/minikube#install-helm[Install Helm]). Install the riff system in the cluster:
 
@@ -782,7 +782,6 @@ https://github.com/projectriff/riff[Riff] is a container runtime with strong lin
 $ helm repo add projectriff https://projectriff.storage.googleapis.com/charts/releases
 $ helm repo update
 $ helm install projectriff/riff --name riff --version 0.4.x
-
 ```
 
 Now you can use the CLI to build an image and deploy it. From the simple Spring Boot application we used above, we first build an image and install it as an "application" in the cluster:
@@ -857,7 +856,7 @@ $ riff application create demo --image myorg/myapp --local-path ./target/*.jar
 
 Once the image is updated, the cluster will launch a new pod and switch traffic over to it when it comes up.
 
-### Deploying an Application without Riff CLI
+=== Deploying an Application without Riff CLI
 
 The Riff CLI is just a convenience wrapper around a container build, plus a few lines of YAML. If you already built the container a different way, like with a Dockerfile, you can create the YAML manually and simply apply it with `kubcetl`. The two `riff` invocations result in 2 API objects:
 
@@ -942,7 +941,7 @@ Events:
 
 If a new container is detected it will cause the deployer to do a rolling update on the application replicaset.
 
-### PetClinic with MySQL on Riff
+=== PetClinic with MySQL on Riff
 
 If you are running a MySQL service already on the cluster you can bind to it using the `--env` and `--envFrom` options on the `riff core deployer create` command. Or you can create some YAML and bind to the configuration in the deployer spec. Example:
 
@@ -1036,9 +1035,9 @@ metadata:
 
 `deployer.yaml` is the container and deployer declarations, and `binding.yaml` is the patch with the volume mount.
 
-## Basic Observability with Prometheus
+== Basic Observability with Prometheus
 
-### Install Helm
+=== Install Helm
 
 First download and install the https://github.com/helm/helm/blob/master/README.md[Helm] CLI. Then initialize it (assuming you have RBAC enabled in your cluster):
 
@@ -1051,7 +1050,7 @@ $ helm list
 
 The result is empty, but if there are no errors then you are ready to start. More https://helm.sh/docs/[docs] online.
 
-### Install and Configure Prometheus
+=== Install and Configure Prometheus
 
 A minimal, ephemeral (not for production use) prometheus:
 

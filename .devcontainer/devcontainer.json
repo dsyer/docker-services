@@ -13,6 +13,9 @@
 
 		"-v","/var/run/docker.sock:/var/run/docker.sock",
 		"--mount", "type=bind,source=${env:HOME}/.docker,target=/home/vscode/.docker",
+		"--mount", "type=bind,source=${env:HOME}/.kube,target=/home/vscode/.kube",
+		// On the host: kind get kubeconfig --internal > ~/.kube/kind-config-internal
+		"-e", "KUBECONFIG=/home/vscode/.kube/kind-config-internal",
 
 		"-e", "CLUSTER=kind",
 		"-e", "REGISTRY=docker-daemon",
@@ -33,5 +36,6 @@
 
 	// Add the IDs of extensions you want installed when the container is created in the array below.
 	"extensions": [
+		"joaompinto.asciidoctor-vscode"
 	]
 }
