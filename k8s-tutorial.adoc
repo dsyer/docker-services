@@ -1015,7 +1015,6 @@ resources:
 - config.yaml
 - deployer.yaml
 patchesStrategicMerge:
-binding convention to work
 - binding.yaml
 configMapGenerator:
   - name: env-config
