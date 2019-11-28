@@ -21,6 +21,6 @@ COPY --from=build ${DEPENDENCY}/META-INF /app/META-INF
 COPY --from=build ${DEPENDENCY}/BOOT-INF/classes /app
 RUN chown -R demo:demo /app
 USER demo
+ENV MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=info,health,metrics,prometheus
 ENTRYPOINT ["sh", "-c", "java -noverify -XX:TieredStopAtLevel=1 -cp /app:/app/lib/*:${EXT_LIBS}/* \
-  -Dmanagement.endpoints.web.exposure.include=prometheus,info,health,metrics \
   com.example.demo.DemoApplication ${0} ${@}"]

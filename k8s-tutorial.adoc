@@ -1107,3 +1107,6 @@ TODO:
 * Automate adding pod annotations (CRD?)
 * Automate adding actuators
 * Kubernetes native actuators (like in PCF)
+* Kafka broker: https://www.kaaproject.org/kafka-docker
+* Redis
+* Describe MySQL set up: hand-rolled and and CNB bindings
