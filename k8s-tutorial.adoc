@@ -30,9 +30,9 @@ NAME                 TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE
 service/kubernetes   ClusterIP   10.43.0.1    <none>        443/TCP   7m13s
 ```
 
-Most of what follows would work just fine if you create your cluster in some other way (e.g. on GCP or AWS). There are also other options for local clusters, like https://github.com/kubernetes/minikube[Minikube] or https://github.com/kubernetes-sigs/kind[Kind].
+Most of what follows would work just fine if you create your cluster in some other way (e.g. on GCP or AWS). There are also other options for local clusters, like https://github.com/kubernetes/minikube[Minikube] or https://github.com/rancher/k3d[K3d].
 
-NOTE: If you have limited resources, but have an internet connection, you can get a nice playground for trying out kubernetes using the https://kubernetes.io/docs/tutorials/kubernetes-basics[bootcamp tutorial]. You get a kubernetes cluster and a bash terminal with kubectl, docker, java and git. All or most of the examples here should work there, if you don't want to use `kind`.
+NOTE: If you have limited resources, but have an internet connection, you can get a nice playground for trying out kubernetes using the https://www.katacoda.com/springguides[Spring Kubernetes Guides] or the Kubernetes https://kubernetes.io/docs/tutorials/kubernetes-basics[bootcamp tutorial]. You get a kubernetes cluster and a bash terminal with kubectl, docker, java and git. All or most of the examples here should work there, if you don't want to use `kind`.
 
 === Connecting to Kubernetes from Inside a Container
 
@@ -57,7 +57,7 @@ To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
 
 Using this you can launch VSCode on a project using the remote container extension and then build and operator it from within the container.
 
-NOTE: Rancher has another dockerized kubernetes cluster called https://github.com/rancher/k3s[k3s] which works in a similar way to kind. They don't have the "internal" flag though, so it's harder to use from another container
+NOTE: Rancher has another dockerized kubernetes cluster called https://github.com/rancher/k3s[K3s] which works in a similar way to Kind. They don't have the "internal" flag though, so it's harder to use from another container
 
 == Build and Containerize a Spring Boot Application
 
@@ -124,7 +124,7 @@ A nice quick way to deploy the application to kubernetes is to generate a YAML d
 ```
 $ kubectl create deployment demo --image=myorg/demo --dry-run -o=yaml > deployment.yaml
 $ echo --- > deployment.yaml
-$ kubectl create service clusterip demo --tcp=8080:8080 --dry-run -o=yaml >> deployment.yaml
+$ kubectl create service clusterip demo --tcp=80:8080 --dry-run -o=yaml >> deployment.yaml
 ```
 
 You can edit the YAML at this point if you need to (e.g. you can remove the redundant status and created date entries). Or you can just apply it, as it is:
@@ -142,7 +142,7 @@ pod/demo-658b7f4997-qfw9l        1/1       Running     0          146m
 
 NAME                 TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
 service/kubernetes   ClusterIP   10.43.0.1       <none>        443/TCP    2d18h
-service/demo         ClusterIP   10.43.138.213   <none>        8080/TCP   21h
+service/demo         ClusterIP   10.43.138.213   <none>        80/TCP   21h
 
 NAME                   READY     UP-TO-DATE   AVAILABLE   AGE
 deployment.apps/demo   1/1       1            1           21h
@@ -152,7 +152,7 @@ replicaset.apps/demo-658b7f4997   1         1         1         21h
 d
 ```
 
-There is a deployment and a service, per the YAML we created above. The deployment has spawned a replicaset and a pod, which is running.
+There is a deployment and a service, per the YAML we created above. The deployment has spawned a replicaset and a pod, which is running. The service is listening on port 80 on an internal cluster IP address - use port 80 so that service discovery via DNS works inside the cluster.
 
 The application will have logged a normal Spring Boot startup to its console on the pod listed above. E.g.
 
@@ -180,7 +180,7 @@ $ kubctl logs demo-658b7f4997-qfw9l
 The service was created with type `ClusterIP` so it is only accessible from within the cluster. Once the app is running you can use `kubectl` to punch through to the service and check that the endpoint is working:
 
 ```
-$ kubectl port-forward svc/demo 8080:8080
+$ kubectl port-forward svc/demo 8080:80
 $ curl localhost:8080
 Hello World!
 ```
@@ -201,7 +201,7 @@ The deployment notices that it has a new image to install, so it creates a new p
 If you use `kubectl port-forward` to create an SSH tunnel to the service you can only access it from localhost. If, instead, you want to share the app on the internet or LAN, you can get something up and running really quickly with `ngrok`. Example:
 
 ```
-kubectl run --restart=Never -t -i --rm ngrok --image=gcr.io/kuar-demo/ngrok -- http demo:8080
+kubectl run --restart=Never -t -i --rm ngrok --image=gcr.io/kuar-demo/ngrok -- http demo:80
 ```
 
 When `ngrok` starts it announces on the console a public http and https service that connects to your "demo" service.
@@ -279,7 +279,7 @@ spec:
   ports:
     - protocol: TCP
       port: 8080
-      targetPort: 8080
+      targetPort: 80
       name: http
 ```
 
@@ -412,7 +412,7 @@ To update the application deployment and test the change (assuming Spring Boot a
 
 ```
 $ kustomize build k8s/local | kubectl apply -f -
-$ kubectl port-forward svc/demo 8080:8080
+$ kubectl port-forward svc/demo 8080:80
 $ curl localhost:8080/actuator/info
 {"name":"demo"}
 ```
