@@ -861,7 +861,7 @@ Once the image is updated, the cluster will launch a new pod and switch traffic 
 The Riff CLI is just a convenience wrapper around a container build, plus a few lines of YAML. If you already built the container a different way, like with a Dockerfile, you can create the YAML manually and simply apply it with `kubcetl`. The two `riff` invocations result in 2 API objects:
 
 ```
-$ kubctl apply -f -
+$ kubectl apply -f -
 apiVersion: build.projectriff.io/v1alpha1
 kind: Application
 metadata:
@@ -885,9 +885,28 @@ spec:
     - name: handler
 ```
 
-Since we built our own container, instead of `Application` and `applicationRef` we could have used `Container` and `containerRef` with the same effect, i.e:
+Since we built our own container, instead of `Application` and `applicationRef` we could specify that directly in the `Deployer`, i.e.
 
 ```
+apiVersion: core.projectriff.io/v1alpha1
+kind: Deployer
+metadata:
+  name: demo
+  labels:
+    created: manual
+spec:
+  template:
+    containers:
+    - name: handler
+      image: myorg/myapp
+```
+
+If there is a change in the container, we need to change the tag and update the `Deployer` resource (e.g. you can use `myorg/myapp:red` and `myorg/myapp:black`). If a new container is detected it will cause the deployer to do a rolling update on the application replicaset.
+
+There is also a `Container` resource that you could use to specify the container image and attach that to the `Deployer` via a `containerRef`:
+
+```
+$ kubectl apply -f -
 apiVersion: build.projectriff.io/v1alpha1
 kind: Container
 metadata:
@@ -895,14 +914,13 @@ metadata:
 spec:
   image: myorg/myapp
 
----
-
+----
 apiVersion: core.projectriff.io/v1alpha1
 kind: Deployer
 metadata:
   name: demo
-  labels:
-    created: manual
+   labels:
+     created: manual
 spec:
   build:
     containerRef: demo
@@ -911,7 +929,7 @@ spec:
     - name: handler
 ```
 
-If there is a change in the container, we need to delete the corresponding resource and re-create it:
+Then you can delete the `Container` resource and re-create it when the image changes:
 
 ```
 $ kubectl delete container demo
@@ -924,37 +942,14 @@ spec:
   image: myorg/myapp
 ```
 
-If we had been using an `Application` and building using the riff builder in the cluster then there would be no need to delete and re-create. But if the container is built outside the cluster then we need to make a change so the feedback loop can kick off. An alternative would be to use unique labels on the containers, instead of "latest". E.g. `myorg/myapp:v1` and `myorg/myapp:v2`. You can see changes being detected in the status of the container, e.g:
+If we had been using an `Application` and building using the riff builder in the cluster then there would be no need to delete and re-create. But if the container is built outside the cluster then we need to make a change so the feedback loop can kick off. 
 
-```
-$ kubectl describe container demo
-...
-  Latest Image:            index.docker.io/myorg/myapp@sha256:18cb7be5a...
-  Observed Generation:     6
-  Target Image:            myorg/myapp
-Events:
-  Type    Reason        Age                 From                  Message
-  ----    ------        ----                ----                  -------
-  Normal  Updated       20m (x4 over 97m)   container-controller  Updated Container "demo"
-
-```
-
-If a new container is detected it will cause the deployer to do a rolling update on the application replicaset.
 
 === PetClinic with MySQL on Riff
 
 If you are running a MySQL service already on the cluster you can bind to it using the `--env` and `--envFrom` options on the `riff core deployer create` command. Or you can create some YAML and bind to the configuration in the deployer spec. Example:
 
 ```
-apiVersion: build.projectriff.io/v1alpha1
-kind: Container
-metadata:
-  name: petclinic
-spec:
-  image: myorg/petclinic
-
----
-
 apiVersion: core.projectriff.io/v1alpha1
 kind: Deployer
 metadata:
@@ -962,11 +957,10 @@ metadata:
   labels:
     created: manual
 spec:
-  build:
-    containerRef: petclinic
   template:
     containers:
     - name: handler
+      image: myorg/petclinic
       env:
       - name: MYSQL_HOST
         valueFrom:

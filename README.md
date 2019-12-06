@@ -256,6 +256,21 @@ options ndots:5
 
 Shows that the local domain name is `default.svc.cluster.local` (where "default" is the namespace name). Services can be resolved as `<service>.<namespace>.svc.cluster.local`.
 
+One liner:
+
+```
+$ kubectl run -ti --image=alpine --restart=Never shell cat /etc/resolv.conf | grep search | cut -d ' ' -f 3
+svc.cluster.local
+$ kubectl delete pod shell --force
+```
+
+or from an existing pod
+
+```
+$ kubectl exec -ti demo-6c9dd5dbf9-kwv54 cat /etc/resolv.conf | grep search | cut -d ' ' -f 3
+svc.cluster.local
+```
+
 ## Curl
 
 ```
