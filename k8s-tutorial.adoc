@@ -16,6 +16,7 @@ $
 You can use that `KUBECONFIG` environment variable per the suggestion, but then you lose the context if you switch terminals. Or you can merge the kind cluster config with your existing config:
 
 ```
+$ mkdir -p ~/.kube
 $ KUBECONFIG="$(kind get kubeconfig-path)":~/.kube/config kubectl config view --merge --flatten > config.yaml
 $ mv config.yaml ~/.kube/config
 ```
