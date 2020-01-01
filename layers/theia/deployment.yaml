@@ -25,13 +25,6 @@ spec:
           volumeMounts:
             - name: data
               mountPath: /home/project
-          resources:
-            requests:
-              cpu: 1000m
-              memory: 1G
-            limits:
-              cpu: 2000m
-              memory: 2G
       initContainers:
       - name: volume-mount
         image: busybox
