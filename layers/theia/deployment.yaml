@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: theia
+  labels:
+    app: theia
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      theia: theia
+  template:
+    metadata:
+      labels:
+        theia: theia
+    spec:
+      containers:
+        - image: dsyer/theia-java
+          name: theia
+          ports:
+            - containerPort: 3000
+              name: theia
+            - containerPort: 8080
+              name: app
+          volumeMounts:
+            - name: data
+              mountPath: /home/project
+          resources:
+            requests:
+              cpu: 1000m
+              memory: 1G
+            limits:
+              cpu: 2000m
+              memory: 2G
+      initContainers:
+      - name: volume-mount
+        image: busybox
+        command: ["sh", "-c", "chown -R 1001:1001 /home/project"]
+        volumeMounts:
+        - name: data
+          mountPath: /home/project
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: theia
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: theia
+  labels:
+    theia: theia
+spec:
+  ports:
+    - port: 3000
+      name: theia
+    - port: 8080
+      name: app
+  selector:
+    theia: theia
