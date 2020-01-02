@@ -378,6 +378,19 @@ $ curl localhost:8080
 Hello World!
 ```
 
+## Kubernetes API Access
+
+https://medium.com/@nieldw/curling-the-kubernetes-api-server-d7675cfc398c
+
+```
+$ SERVICE_ACCOUNT=default
+$ SECRET=$(kubectl get serviceaccount ${SERVICE_ACCOUNT} -o json | jq -Mr '.secrets[].name | select(contains("token"))')
+$ TOKEN=$(kubectl get secret ${SECRET} -o json | jq -Mr '.data.token' | base64 -d)
+$ kubectl get secret ${SECRET} -o json | jq -Mr '.data["ca.crt"]' | base64 -d > /tmp/ca.crt
+$ APISERVER=https://$(kubectl -n default get endpoints kubernetes --no-headers | awk '{ print $2 }')
+curl -s $APISERVER/openapi/v2  --header "Authorization: Bearer $TOKEN" --cacert /tmp/ca.crt | tee /tmp/k8s.json
+```
+
 ## Quick and Dirty Ingress
 
 Simple port forwarding for localhost:
