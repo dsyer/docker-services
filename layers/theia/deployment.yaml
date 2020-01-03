@@ -8,11 +8,11 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      theia: theia
+      app: theia
   template:
     metadata:
       labels:
-        theia: theia
+        app: theia
     spec:
       containers:
         - image: dsyer/theia-java
@@ -44,7 +44,7 @@ kind: Service
 metadata:
   name: theia
   labels:
-    theia: theia
+    app: theia
 spec:
   ports:
     - port: 3000
@@ -52,4 +52,4 @@ spec:
     - port: 8080
       name: app
   selector:
-    theia: theia
+    app: theia
