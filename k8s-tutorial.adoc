@@ -186,6 +186,8 @@ $ curl localhost:8080
 Hello World!
 ```
 
+NOTE: The `Service` was set up to listen on port 80. This makes it easy to use DNS for service discovery - you never need to know the port because it is just the default for HTTP. Note also that when the service was created the `kubectl` command had `80:8080` whereas when the port-forward was created, it get transposed to `8080:80` so that port 80 is not used on the host (can be confusing).
+
 === Making Changes
 
 One of the benefits of having a YAML descriptor of your application in source control is that you can use it to trigger an upgrade. The workflow would be something like
