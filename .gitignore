@@ -10,3 +10,4 @@ log/
 .github/workflows/fats
 containerd*
 .vscode/
+.attach_pid*
