@@ -21,11 +21,11 @@ $ KUBECONFIG="$(kind get kubeconfig-path)":~/.kube/config kubectl config view --
 $ mv config.yaml ~/.kube/config
 ```
 
-Then just use the "default" context:
+Then just use the context defined by `kind`:
 
 ```
-$ kubectl config use-context default
-Switched to context "default".
+$ kubectl config use-context kubernetes-admin@kind
+Switched to context "kubernetes-admin@kind".
 $ kubectl get all
 NAME                 TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE
 service/kubernetes   ClusterIP   10.43.0.1    <none>        443/TCP   7m13s

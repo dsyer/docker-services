@@ -1,0 +1,17 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: job
+spec:
+  parallelism: 2
+  completions: 2
+  template:
+    spec:
+      containers:
+      - name: hello
+        image: busybox
+        args:
+        - /bin/sh
+        - -c
+        - date; env; find /var/run
+      restartPolicy: Never
