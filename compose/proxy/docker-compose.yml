@@ -1,0 +1,6 @@
+nginx:
+  image: nginx
+  ports:
+    - "80:80"
+  volumes:
+    - "./conf:/etc/nginx:ro"
