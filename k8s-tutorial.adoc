@@ -56,7 +56,7 @@ KubeDNS is running at https://172.17.0.3:6443/api/v1/namespaces/kube-system/serv
 To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
 ```
 
-Using this you can launch VSCode on a project using the remote container extension and then build and operator it from within the container.
+Using this you can launch VSCode on a project using the remote container extension and then build and operate it from within the container.
 
 NOTE: Rancher has another dockerized kubernetes cluster called https://github.com/rancher/k3s[K3s] which works in a similar way to Kind. They don't have the "internal" flag though, so it's harder to use from another container
 
@@ -211,6 +211,62 @@ When `ngrok` starts it announces on the console a public http and https service 
 
 NOTE: A global tunnel on `ngrok` is certainly not recommended for production apps, but is quite handy at development time.
 
+=== Ingress with Kind and Socat
+
+Not really ingress in the Kubernetes sense. This is a bit like port forward, since it works at the tcp level, but more stable (the "tunnel" survives a restart of the service pods). Define this function in your shell:
+
+```bash
+function socat() {
+
+    service=$1
+    port=$2
+    local_port=$3
+    node_port=$(kubectl get service $service -o=jsonpath="{.spec.ports[?(@.port == ${port})].nodePort}")
+
+    docker run -d --name kind-proxy-${local_port} \
+      --publish 127.0.0.1:${local_port}:${port} \
+      --link kind-control-plane:target \
+      alpine/socat -dd \
+      tcp-listen:${port},fork,reuseaddr tcp-connect:target:${node_port}
+
+}
+```
+
+and then change the service declarations for the services you need to expose to `type: NodePort`. E.g.
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ui
+spec:
+  type: NodePort
+...
+```
+
+then you will see it in `kubectl` along with the ephemeral port assigned on the node:
+
+```
+$ kubectl get service
+NAME         TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)                                        AGE
+ui           NodePort    10.109.157.132   <none>        80:31207/TCP                                 3h57m
+```
+
+and you can expose it on localhost using `socat ui 80 8080` and then `curl localhost:8080` to reach it.
+
+=== Ingress with Kubeadm and Socat
+
+If your kubernetes cluster is on bare metal (like the default one at katacoda.com) you can run socat on the host. Expose your service as `type: NodePort` and then run socat on the node:
+
+```
+$ port=80
+$ service=demo
+$ node_port=$(kubectl get service $service -o=jsonpath="{.spec.ports[?(@.port == ${port})].nodePort}")
+$ socat -dd tcp-listen:8080,fork,reuseaddr tcp-connect:127.0.0.1:${node_port}
+```
+
+Then you can connect in an other terminal to `localhost:8080`.
+
 == Organizing YAML with Kustomize
 
 As soon as you need to deploy your application to more than one cluster (e.g. local, test and production environments), it becomes challenging to maintain all the different options in YAML. Ideally you want to be able to create all the options and commit them to source control. There are many options to maintain and organize YAML files, many of which involve templating. Templating means replacing placeholders in files that you create with different values at deployment time. The problem with this that the template files tend not to be valid on their own, and they are hard to read, test and maintain.
@@ -250,14 +306,15 @@ $ kustomize build k8s/base/ | kubectl apply -f -
 
 The `deployment.yaml` that we have is fine, but it's not very portable - you can only use it once in the same namespace because of the hard-coded labels and selectors. Kustomize has a feature that lifts that restriction, and simplifies the YAML. We can use this `kustomization.yaml` (note the addition of the `commonLabels`):
 
-```
+[source, yml, indent=0]
+----
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
 - deployment.yaml
 commonLabels:
   app: demo
-```
+----
 
 with the labels and selectors removed from `deployment.yaml`:
 
