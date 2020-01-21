@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app
+spec:
+  template:
+    spec:
+      initContainers:
+      - name: jar
+        volumeMounts:
+        - mountPath: /app/thin
+          name: app
+        image: tutum/curl
+        command:
+          - curl
+          - -L
+          - -o
+          - /app/thin/launcher.jar
+          - http://repo1.maven.org/maven2/org/springframework/boot/experimental/spring-boot-thin-launcher/1.0.23.RELEASE/spring-boot-thin-launcher-1.0.23.RELEASE-exec.jar
+      containers:
+      - name: app
+        volumeMounts:
+        - mountPath: /app/thin
+          name: app
+        command:
+          - java
+          - -jar
+          - /app/thin/launcher.jar
+          - --thin.archive=/app
+          - --thin.trace=true
+          - --thin.profile=k8s
+      volumes:
+      - name: app
+        emptyDir: {}
