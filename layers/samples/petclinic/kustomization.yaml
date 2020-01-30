@@ -9,10 +9,9 @@ namePrefix: petclinic-
 # otherwise the app service selects the mysql pods
 # commonLabels:
 #   app: petclinic
+transformers:
+- ../../mysql/transformer
 patchesStrategicMerge:
-# Need to build with `--load_restrictor none`
-# Can't use github.com remote path
-- ../../mysql/app.yaml
 - probes.yaml
 images:
   - name: dsyer/template

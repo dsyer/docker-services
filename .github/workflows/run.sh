@@ -20,13 +20,13 @@ cd `dirname "${BASH_SOURCE[0]}"`
 export KAPP_NAMESPACE=${NAMESPACE}
 
 # run test functions
-for test in base actuator prometheus mysql; do
+for test in base actuator prometheus mysql kafka; do
   echo "##[group]Run kustomize layers/$test"
     kustomize build ${basedir}/layers/${test} --load_restrictor none
   echo "##[endgroup]"
 done
 
-for test in base actuator prometheus mysql; do
+for test in base actuator prometheus mysql kafka; do
   echo "##[group]Apply kustomize layers/$test"
     kubectl apply \
       -f <(kustomize build ${basedir}/layers/${test} --load_restrictor none) \
@@ -40,7 +40,7 @@ for test in simple enhanced petclinic; do
   echo "##[endgroup]"
 done
 
-for test in simple enhanced petclinic server; do
+for test in simple enhanced petclinic service; do
   echo "##[group]Apply app $test"
     kubectl apply \
       -f <(kustomize build samples/${REGISTRY}/${test} --load_restrictor none) \
@@ -48,7 +48,7 @@ for test in simple enhanced petclinic server; do
   echo "##[endgroup]"
 done
 
-for test in simple enhanced petclinic server; do
+for test in simple enhanced petclinic service; do
   echo "##[group]Deploy app $test"
     name=demo
     if [ "${test}" == "petclinic" ] || [ "${test}" == "server" ]; then

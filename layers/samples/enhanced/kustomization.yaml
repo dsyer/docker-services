@@ -8,10 +8,9 @@ commonLabels:
 resources:
 # Can replace this with github.com/dsyer/docker-services/layers/prometheus
 - ../../actuator
+transformers:
+- ../../env
 
-patchesStrategicMerge:
-# Need to build with `--load_restrictor none`
-- ../env/env.yaml
 
 images:
   - name: dsyer/template
