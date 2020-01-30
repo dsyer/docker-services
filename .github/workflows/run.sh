@@ -22,40 +22,40 @@ export KAPP_NAMESPACE=${NAMESPACE}
 # run test functions
 for test in base actuator prometheus mysql kafka; do
   echo "##[group]Run kustomize layers/$test"
-    kustomize build ${basedir}/layers/${test} --load_restrictor none
+    kustomize build ${basedir}/layers/${test}
   echo "##[endgroup]"
 done
 
 for test in base actuator prometheus mysql kafka; do
   echo "##[group]Apply kustomize layers/$test"
     kubectl apply \
-      -f <(kustomize build ${basedir}/layers/${test} --load_restrictor none) \
+      -f <(kustomize build ${basedir}/layers/${test}) \
       --dry-run --namespace ${NAMESPACE}
   echo "##[endgroup]"
 done
 
-for test in simple enhanced petclinic; do
+for test in simple enhanced petclinic service; do
   echo "##[group]Run kustomize sample $test"
-    kustomize build ${basedir}/layers/samples/${test} --load_restrictor none
+    kustomize build ${basedir}/layers/samples/${test}
   echo "##[endgroup]"
 done
 
-for test in simple enhanced petclinic service; do
+for test in simple enhanced petclinic server; do
   echo "##[group]Apply app $test"
     kubectl apply \
-      -f <(kustomize build samples/${REGISTRY}/${test} --load_restrictor none) \
+      -f <(kustomize build samples/${REGISTRY}/${test}) \
       --dry-run --namespace ${NAMESPACE}
   echo "##[endgroup]"
 done
 
-for test in simple enhanced petclinic service; do
+for test in simple enhanced petclinic server; do
   echo "##[group]Deploy app $test"
     name=demo
     if [ "${test}" == "petclinic" ] || [ "${test}" == "server" ]; then
       name=${test}
     fi
     kapp deploy --wait-check-interval 10s --wait-timeout 30m -y -a $test \
-      -f <(kustomize build samples/${REGISTRY}/${test} --load_restrictor none | IMAGE=$(fats_image_repo ${name}) envsubst)
+      -f <(kustomize build samples/${REGISTRY}/${test} | IMAGE=$(fats_image_repo ${name}) envsubst)
     kapp delete -y -a $test
   echo "##[endgroup]"
 done
