@@ -369,11 +369,11 @@ Create container and deployment:
 $ docker build -t gcr.io/cf-sandbox-dsyer/demo .
 $ mkdir k8s
 $ kubectl create deployment demo --image=gcr.io/cf-sandbox-dsyer/demo --dry-run -o=yaml > k8s/deployment.yaml
-$ echo --- > k8s/deployment.yaml
-$ kubectl create service clusterip demo --tcp=8080:8080 --dry-run -o=yaml >> k8s/deployment.yaml
+$ echo --- >> k8s/deployment.yaml
+$ kubectl create service clusterip demo --tcp=8080:80 --dry-run -o=yaml >> k8s/deployment.yaml
 ... edit YAML to taste
 $ kubectl apply -f k8s/deployment.yaml
-$ kubectl port-forward svc/demo 8080:8080
+$ kubectl port-forward svc/demo 80:8080
 $ curl localhost:8080
 Hello World!
 ```

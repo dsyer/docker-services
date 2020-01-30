@@ -124,7 +124,7 @@ A nice quick way to deploy the application to kubernetes is to generate a YAML d
 
 ```
 $ kubectl create deployment demo --image=myorg/demo --dry-run -o=yaml > deployment.yaml
-$ echo --- > deployment.yaml
+$ echo --- >> deployment.yaml
 $ kubectl create service clusterip demo --tcp=80:8080 --dry-run -o=yaml >> deployment.yaml
 ```
 
@@ -1157,9 +1157,5 @@ The annotations are picked up by "scraping rules" that were defined for us in th
 TODO:
 
 * Security for the actuator endpoint
-* Automate adding pod annotations (CRD?)
-* Automate adding actuators
 * Kubernetes native actuators (like in PCF)
-* Kafka broker: https://www.kaaproject.org/kafka-docker
-* Redis
 * Describe MySQL set up: hand-rolled and and CNB bindings
