@@ -76,18 +76,6 @@
 								<copy todir="k8s/vendor" failonerror="false">
 									<fileset dir="../layers" excludes="samples/**"/>
 								</copy>
-								<copy todir="k8s/dev/vendor/libs" failonerror="false">
-									<fileset dir="k8s/libs"/>
-								</copy>
-								<copy todir="k8s/prod/vendor/libs" failonerror="false">
-									<fileset dir="k8s/libs"/>
-								</copy>
-								<copy todir="k8s/gcr/vendor/libs" failonerror="false">
-									<fileset dir="k8s/libs"/>
-								</copy>
-								<copy todir="k8s/node/vendor/libs" failonerror="false">
-									<fileset dir="k8s/libs"/>
-								</copy>
 							</target>
 						</configuration>
 						<goals>

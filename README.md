@@ -208,11 +208,57 @@ The images will not be usable by k8s (even if you can run them with docker) unle
 
 ### Private Registry
 
-Articles on private Docker regsitry in GKE:
+Articles on private Docker registry in GKE:
 
 * [Offical Kubernetes docs](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/). Note the need for every pod spec to refer to the `imagePullSecrets` for authentication.
 * [External with certs](https://blog.cloudhelix.io/using-a-private-docker-registry-with-kubernetes-f8d5f6b8f646). Similar requirement for secrets in pod specs.
 * As a [pod in the cluster](https://ruediste.github.io/cloud/2017/02/23/docker-registry-on-gke.html). I think you need a tunnel to the remote on port 5000 as well.
+* [Heptio docs on private registries](http://docs.heptio.com/content/private-registries/pr-gcr.html), include instructions on how to set up GCR in a non-GKE Kubernetes cluster.
+
+From the Heptio docs:
+
+```
+# create a GCP service account; format of account is email address
+SA_EMAIL=$(gcloud iam service-accounts --format='value(email)' create k8s-gcr-auth-ro)
+# create the json key file and associate it with the service account
+gcloud iam service-accounts keys create k8s-gcr-auth-ro.json --iam-account=$SA_EMAIL
+# get the project id
+PROJECT=$(gcloud config list core/project --format='value(core.project)')
+# add the IAM policy binding for the defined project and service account
+gcloud projects add-iam-policy-binding $PROJECT --member serviceAccount:$SA_EMAIL --role roles/storage.objectViewer
+```
+
+Then create the secret and specify the file that you just created:
+
+```
+SECRETNAME=varSecretName
+
+kubectl create secret docker-registry $SECRETNAME \
+  --docker-server=https://gcr.io \
+  --docker-username=_json_key \
+  --docker-email=user@example.com \
+  --docker-password="$(cat k8s-gcr-auth-ro.json)"
+```
+
+where the values must be as follows:
+
+* `$SECRETNAME`	An arbitrary string to serve as the name of the secret
+* `docker-server`	Must be set to “https://gcr.io” (or some variant, a subdomain may be required depending on your availability zone)
+* `docker-username`	Must be set to _json_key
+* `docker-email`	Must be any well-formed email address (not used, but required)
+* `docker-password`	The contents of the json key file that you created in the previous script
+
+> NOTE:	The command above only creates the secret in the default namespace. You will need to specify -n and create a secret for each namespace that your pods are in, because pods can only reference the image pull secrets in their own namespace.
+
+You can now add the secret to your Kubernetes configuration. You can add it to the default service account with the following command:
+
+```
+SECRETNAME=varSecretName
+kubectl patch serviceaccount default \
+  -p "{\"imagePullSecrets\": [{\"name\": \"$SECRETNAME\"}]}"
+```
+
+If you work with only the default service account, then all pods in the namespace pull images from the private registry. This is the case whether or not you explicitly specify the service account in the pod spec. If you work with multiple service accounts, each service account must provide the appropriate imagePullSecrets value. For more information, see the Kubernetes documentation on service accounts.
 
 ### Google Container Registry
 

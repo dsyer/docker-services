@@ -4,15 +4,7 @@ namePrefix: demo-
 commonLabels:
   app: demo-app
 resources:
-# Can replace this with github.com/dsyer/docker-services/layers/prometheus
 - ../../base
-transformers:
-- ../../env
 images:
   - name: dsyer/template
     newName: dsyer/demo
-configMapGenerator:
-  - name: env-config
-    behavior: merge
-    literals:
-      - SERVER_NAME=foo

@@ -1,0 +1,14 @@
+apiVersion: skaffold/v2alpha2
+kind: Config
+metadata:
+  name: demo
+build:
+  artifacts:
+  - image: dsyer/demo
+    context: ./demo
+  local:
+    useBuildkit: true
+deploy:
+  kustomize: {
+    path: ./layers/samples/config
+  }

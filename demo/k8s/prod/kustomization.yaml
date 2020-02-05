@@ -6,8 +6,8 @@ commonLabels:
   app: dev-demo
 resources:
 - ../vendor/prometheus
-patchesStrategicMerge:
-  - vendor/libs/env.yaml
+transformers:
+  - ../vendor/env
 images:
 - name: dsyer/template
   newName: dsyer/demo

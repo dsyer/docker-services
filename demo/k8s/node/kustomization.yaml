@@ -7,8 +7,9 @@ commonLabels:
 resources:
 - ../vendor/actuator
 patchesStrategicMerge:
-- vendor/libs/env.yaml
 - service.yaml
+transformers:
+- ../vendor/env
 images:
 - name: dsyer/template
   newName: dsyer/demo

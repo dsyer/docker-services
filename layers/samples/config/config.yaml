@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+      - name: app
+        volumeMounts:
+          - mountPath: /app/config
+            name: env-config
+        env:
+          - name: VERSION
+            value: green
+      volumes:
+        - name: env-config
+          configMap:
+              name: env-config
