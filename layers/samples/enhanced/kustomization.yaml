@@ -6,10 +6,10 @@ commonLabels:
   app: demo
 
 resources:
-# Can replace this with github.com/dsyer/docker-services/layers/prometheus
-- ../../actuator
+- ../../base
 transformers:
 - ../../env
+- ../../actuator
 
 images:
   - name: dsyer/template

@@ -5,8 +5,10 @@ namePrefix: dev-
 commonLabels:
   app: dev-demo
 resources:
-- ../vendor/prometheus
+  - ../vendor/base
 transformers:
+  - ../vendor/actuator
+  - ../vendor/prometheus
   - ../vendor/env
 images:
 - name: dsyer/template

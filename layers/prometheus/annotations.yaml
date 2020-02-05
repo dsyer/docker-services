@@ -1,12 +1,22 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: builtin
+kind: PatchTransformer
 metadata:
+  name: set-prometheus-annotations
+target:
+  group: apps
+  version: v1
+  kind: Deployment
   name: app
-spec:
-  template:
-    metadata:
-      annotations:
-        prometheus.io/path: /actuator/prometheus
-        prometheus.io/port: "8080"
-        prometheus.io/scrape: "true"
+patch: |-
+  apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    name: app
+  spec:
+    template:
+      metadata:
+        annotations:
+          prometheus.io/path: /actuator/prometheus
+          prometheus.io/port: "8080"
+          prometheus.io/scrape: "true"
         

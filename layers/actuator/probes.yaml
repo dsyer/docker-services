@@ -1,21 +1,31 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: builtin
+kind: PatchTransformer
 metadata:
+  name: set-probes
+target:
+  group: apps
+  version: v1
+  kind: Deployment
   name: app
-spec:
-  template:
-    spec:
-      containers:
-        - name: app
-          livenessProbe:
-            httpGet:
-              path: /actuator/info
-              port: 8080
-            initialDelaySeconds: 10
-            periodSeconds: 3
-          readinessProbe:
-            initialDelaySeconds: 20
-            periodSeconds: 10
-            httpGet:
-              path: /actuator/health
-              port: 8080
+patch: |-
+  apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    name: app
+  spec:
+    template:
+      spec:
+        containers:
+          - name: app
+            livenessProbe:
+              httpGet:
+                path: /actuator/info
+                port: 8080
+              initialDelaySeconds: 10
+              periodSeconds: 3
+            readinessProbe:
+              initialDelaySeconds: 20
+              periodSeconds: 10
+              httpGet:
+                path: /actuator/health
+                port: 8080

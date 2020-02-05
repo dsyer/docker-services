@@ -5,8 +5,9 @@ namePrefix: dev-
 commonLabels:
   app: dev-demo
 resources:
-- ../vendor/actuator
+  - ../vendor/base
 transformers:
+  - ../vendor/actuator
   - ../vendor/env
 images:
 - name: dsyer/template

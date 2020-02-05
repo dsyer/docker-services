@@ -5,10 +5,11 @@ namePrefix: dev-
 commonLabels:
   app: dev-demo
 resources:
-- ../vendor/actuator
+- ../vendor/base
 patchesStrategicMerge:
 - service.yaml
 transformers:
+- ../vendor/actuator
 - ../vendor/env
 images:
 - name: dsyer/template
