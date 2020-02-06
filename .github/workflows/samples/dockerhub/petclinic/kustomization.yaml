@@ -3,3 +3,5 @@ kind: Kustomization
 namePrefix: fats-
 resources:
 - ../../../../../layers/samples/petclinic
+patchesStrategicMerge:
+  - deadline.yaml

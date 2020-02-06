@@ -6,3 +6,5 @@ resources:
 images:
   - name: dsyer/petclinic
     newName: ${IMAGE}
+patchesStrategicMerge:
+  - deadline.yaml

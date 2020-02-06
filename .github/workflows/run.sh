@@ -54,7 +54,7 @@ for test in simple enhanced petclinic server; do
     if [ "${test}" == "petclinic" ] || [ "${test}" == "server" ]; then
       name=${test}
     fi
-    kapp deploy --wait-check-interval 10s --wait-timeout 30m -y -a $test \
+    kapp deploy --wait-check-interval 2s --wait-timeout 30m -y -a $test \
       -f <(kustomize build samples/${REGISTRY}/${test} | IMAGE=$(fats_image_repo ${name}) envsubst)
     kapp delete -y -a $test
   echo "##[endgroup]"
