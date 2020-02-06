@@ -56,6 +56,5 @@ for test in simple enhanced petclinic server; do
     fi
     kapp deploy --wait-check-interval 2s --wait-timeout 30m -y -a $test \
       -f <(kustomize build samples/${REGISTRY}/${test} | IMAGE=$(fats_image_repo ${name}) envsubst)
-    kapp delete -y -a $test
   echo "##[endgroup]"
 done
