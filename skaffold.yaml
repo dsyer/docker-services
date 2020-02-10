@@ -4,11 +4,13 @@ metadata:
   name: demo
 build:
   artifacts:
+  - image: dsyer/sidecar
+    context: ./sidecar
   - image: dsyer/demo
     context: ./demo
   local:
     useBuildkit: true
 deploy:
   kustomize: {
-    path: ./layers/samples/config
+    path: ./layers/samples/secure
   }
