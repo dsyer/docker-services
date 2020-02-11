@@ -5,6 +5,7 @@ set -o nounset
 set -o pipefail
 
 export CLUSTER=${CLUSTER-kind}
+export CLUSTER_NAME=${CLUSTER_NAME-fats}
 export REGISTRY=${REGISTRY-docker-daemon}
 export NAMESPACE=${NAMESPACE-fats}
 

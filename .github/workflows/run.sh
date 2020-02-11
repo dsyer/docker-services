@@ -5,6 +5,7 @@ set -o nounset
 set -o pipefail
 
 export CLUSTER=${CLUSTER-kind}
+export CLUSTER_NAME=${CLUSTER_NAME-fats}
 export REGISTRY=${REGISTRY-docker-daemon}
 export NAMESPACE=${NAMESPACE-fats}
 
@@ -40,7 +41,7 @@ for test in simple enhanced petclinic config service; do
   echo "##[endgroup]"
 done
 
-for test in simple enhanced petclinic server; do
+for test in simple enhanced petclinic server secure; do
   echo "##[group]Apply app $test"
     kubectl apply \
       -f <(kustomize build samples/${REGISTRY}/${test}) \
@@ -48,14 +49,14 @@ for test in simple enhanced petclinic server; do
   echo "##[endgroup]"
 done
 
-for test in simple enhanced petclinic server; do
+for test in simple enhanced petclinic server secure; do
   echo "##[group]Deploy app $test"
     name=demo
     if [ "${test}" == "petclinic" ] || [ "${test}" == "server" ]; then
       name=${test}
     fi
     kapp deploy --wait-check-interval 2s --wait-timeout 30m -y -a $test \
-		 -f <(kustomize build samples/${REGISTRY}/${test} | IMAGE=$(fats_image_repo ${name}) envsubst) \
-		 && kapp delete -y -a $test
+		  -f <(kustomize build samples/${REGISTRY}/${test} | IMAGE=$(fats_image_repo ${name}) envsubst) \
+		  && kapp delete -y -a $test
   echo "##[endgroup]"
 done

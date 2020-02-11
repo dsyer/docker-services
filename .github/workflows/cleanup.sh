@@ -2,7 +2,8 @@
 
 set -o nounset
 
-NAMESPACE=${NAMESPACE-fats}
+export NAMESPACE=${NAMESPACE-fats}
+export CLUSTER_NAME=${CLUSTER_NAME-fats}
 
 # fetch FATS scripts
 fats_dir=`dirname "${BASH_SOURCE[0]}"`/fats
