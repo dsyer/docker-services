@@ -1108,7 +1108,7 @@ The result is empty, but if there are no errors then you are ready to start. Mor
 A minimal, ephemeral (not for production use) prometheus:
 
 ```
-$ helm install stable/prometheus --name prometheus --set=server.persistentVolume.enabled=false,alertmanager.enabled=false,kubeStateMetrics.enabled=false,pushgateway.enabled=false,nodeExporter.enabled=falsealertmanager.enabled=false
+$ helm install stable/prometheus --name prometheus --set=server.persistentVolume.enabled=false,alertmanager.enabled=false,kubeStateMetrics.enabled=false,pushgateway.enabled=false,nodeExporter.enabled=false
 $ kubectl port-forward svc/prometheus-server 8000:80
 ```
 

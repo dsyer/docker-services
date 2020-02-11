@@ -11,7 +11,6 @@ namePrefix: petclinic-
 transformers:
 - ../../mysql/transformer
 - ../../actuator
-- ../../prometheus
 images:
   - name: dsyer/template
     newName: dsyer/petclinic
