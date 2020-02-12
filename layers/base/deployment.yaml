@@ -17,6 +17,7 @@ spec:
             memory: "1024Mi"
           requests:
             memory: "1024Mi"
+            cpu: "1000m"
 
 ---
 
