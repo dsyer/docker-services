@@ -1,0 +1,1 @@
+Attempt to build a bootable VM from a docker image. Almost works. Fails to boot when it can't mount /dev/sda1, so you can make progress by manually running `mount -t ext3 /dev/sda1 /sysroot` and `exit`. Then the app runs but very slow and the network isn't working (e.g. `/etc/hosts` is empty).
