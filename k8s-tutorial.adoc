@@ -207,7 +207,34 @@ If you use `kubectl port-forward` to create an SSH tunnel to the service you can
 kubectl run --restart=Never -t -i --rm ngrok --image=gcr.io/kuar-demo/ngrok -- http demo:80
 ```
 
-When `ngrok` starts it announces on the console a public http and https service that connects to your "demo" service.
+When `ngrok` starts it announces on the console a public http and https service that connects to your "demo" service. E.g.
+
+```
+ngrok by @inconshreveable                                                            (Ctrl+C to quit)
+
+Session Status                online
+Session Expires               7 hours, 50 minutes
+Version                       2.1.18
+Region                        United States (us)
+Web Interface                 http://127.0.0.1:4040
+Forwarding                    http://9ef2c03b.ngrok.io -> demo:80
+Forwarding                    https://9ef2c03b.ngrok.io -> demo:80
+
+Connections                   ttl     opn     rt1     rt5     p50     p90
+                              1       0       0.00    0.00    0.41    0.41  
+
+HTTP Requests
+-------------
+
+GET /                          404 Not Found
+```
+
+You can connect to the dashboard on port 4040 if you expose it as a service:
+
+```
+$ kubectl expose pod/ngrok --port 4040
+$ kubectl port-forward svc/ngrok 4040:4040
+```
 
 NOTE: A global tunnel on `ngrok` is certainly not recommended for production apps, but is quite handy at development time.
 

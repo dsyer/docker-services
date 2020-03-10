@@ -1,0 +1,9 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-tunnel
+  namespace: ingress-nginx
+  annotations:
+    # has to be unique (and >3 chars)
+    # ingress with host rules in *.wood.test.dsyer.com will work
+    domain: wood
