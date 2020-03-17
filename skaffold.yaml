@@ -3,21 +3,22 @@ kind: Config
 build:
   artifacts:
   - image: dsyer/demo
+    context: ./demo
     custom:
-      buildCommand: cd demo && ./mvnw spring-boot:build-image -D docker.image=$IMAGE && docker push $IMAGE
+      buildCommand: ./mvnw spring-boot:build-image -D docker.image=$IMAGE && docker push $IMAGE
       dependencies:
         paths:
-        - demo/pom.xml
-        - demo/src/main/resources
-        - demo/target/classes
+        - pom.xml
+        - src/main/resources
+        - target/classes
     sync:
       manual:
-      - src: "demo/src/main/resources/**/*"
+      - src: "src/main/resources/**/*"
         dest: /workspace/BOOT-INF/classes
-        strip: demo/src/main/resources/
-      - src: "demo/target/classes/**/*"
+        strip: src/main/resources/
+      - src: "target/classes/**/*"
         dest: /workspace/BOOT-INF/classes
-        strip: demo/target/classes/
+        strip: target/classes/
 deploy:
   kustomize:
     paths: 

@@ -535,7 +535,7 @@ Watching for changes...
 ...
 ```
 
-If you make a change to one of the inputs to the docker build, it will kick off again, and re-deploy, bumping the image label automatically, so forcing Kubernetes to do a rolling upgrade. You can also do a `skaffold delete` to tear down the app in one line.
+If you make a change to one of the inputs to the docker build, it will kick off again, and re-deploy, bumping the image label automatically, so forcing Kubernetes to do a rolling upgrade. You can also do a `skaffold delete` to tear down the app in one line, but if `skaffold dev` exits normally it will tear down the app automatically.
 
 Skaffold supports the notion of "profiles", so you can build and deploy slightly differently in different environments. This makes it a useful building block for continuous delivery. You can also use profiles to deploy multiple services and applications from the same codebase.
 
@@ -583,21 +583,22 @@ kind: Config
 build:
   artifacts:
   - image: dsyer/demo
+    context: ./demo
     custom:
-      buildCommand: cd demo && ./mvnw spring-boot:build-image -D docker.image=$IMAGE && docker push $IMAGE
+      buildCommand: ./mvnw spring-boot:build-image -D docker.image=$IMAGE && docker push $IMAGE
       dependencies:
         paths:
-        - demo/pom.xml
-        - demo/src/main/resources
-        - demo/target/classes
+        - pom.xml
+        - src/main/resources
+        - target/classes
     sync:
       manual:
-      - src: "demo/src/main/resources/**/*"
+      - src: "src/main/resources/**/*"
         dest: /workspace/BOOT-INF/classes
-        strip: demo/src/main/resources/
-      - src: "demo/target/classes/**/*"
+        strip: src/main/resources/
+      - src: "target/classes/**/*"
         dest: /workspace/BOOT-INF/classes
-        strip: demo/target/classes/
+        strip: target/classes/
 deploy:
   kustomize:
     paths: 
