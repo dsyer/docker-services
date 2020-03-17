@@ -35,6 +35,32 @@ Most of what follows would work just fine if you create your cluster in some oth
 
 NOTE: If you have limited resources, but have an internet connection, you can get a nice playground for trying out kubernetes using the https://www.katacoda.com/springguides[Spring Kubernetes Guides] or the Kubernetes https://kubernetes.io/docs/tutorials/kubernetes-basics[bootcamp tutorial]. You get a kubernetes cluster and a bash terminal with kubectl, docker, java and git. All or most of the examples here should work there, if you don't want to use `kind`.
 
+=== Kind with a Local Docker Registry
+
+Since Kind runs in Docker, it is convenient also to run a Docker registry as a Docker container locally. That way you don't have to figure out how to authenticate and push to a remote registry, just to play around and test basic behaviour.
+
+First run the registry:
+
+```
+$ docker run -d --restart=always -p "5000:5000" --name registry registry:2
+```
+
+Then start the cluster. You need some configuration to tell it to use the local registry. Example:
+
+```
+$ reg_ip=$(docker inspect -f '{{.NetworkSettings.IPAddress}}' registry)
+$ cat <<EOF | kind create cluster --config=-
+kind: Cluster 
+apiVersion: kind.x-k8s.io/v1alpha4
+containerdConfigPatches: 
+- |-
+  [plugins."io.containerd.grpc.v1.cri".registry.mirrors."localhost:5000"]
+    endpoint = ["http://${reg_ip}:5000"]
+EOF
+```
+
+Then you can use image labels like `localhost:5000/demo` on the host to push the image, and also in the Kubernetes manifests to pull and run it.
+
 === Connecting to Kubernetes from Inside a Container
 
 If you are using kind to run your cluster, then the kubernetes API is exposed on localhost on a random port. It is also exposed on the local docker network on port 6443. On Linux (not sure about Mac and Windows) this means that you can connect to it from another container using that address, and `kind` will even tell you how.
