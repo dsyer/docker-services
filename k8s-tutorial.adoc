@@ -504,6 +504,108 @@ $ curl localhost:8080/actuator/info
 {"name":"demo"}
 ```
 
+== Developer Workflow with Skaffold
+
+Development and deployment can be a series of awkward, unconnected steps. https://github.com/GoogleContainerTools/skaffold[Skaffold] provides a way to stitch them together and take out some of the toil. A basic configuration file for the demo project could look like this:
+
+```yaml
+apiVersion: skaffold/v2alpha2
+kind: Config
+build:
+  artifacts:
+  - image: dsyer/demo
+    context: ./demo
+  local:
+    useBuildkit: true
+deploy:
+  kustomize:
+    path: ./layers/samples/simple
+```
+
+It will build the `./demo` app, using docker (but other options are available) and deploy it using the "simple" kustomization. You can add a command line option to also forward a port and report it on the command line:
+
+```
+$ skaffold dev --forward-port
+...
+Starting deploy...
+ - service/demo unchanged
+ - deployment.apps/demo unchanged
+Port forwarding service/app in namespace default, remote port 80 -> address 127.0.0.1 port 4503
+Watching for changes...
+...
+```
+
+If you make a change to one of the inputs to the docker build, it will kick off again, and re-deploy, bumping the image label automatically, so forcing Kubernetes to do a rolling upgrade. You can also do a `skaffold delete` to tear down the app in one line.
+
+Skaffold supports the notion of "profiles", so you can build and deploy slightly differently in different environments. This makes it a useful building block for continuous delivery. You can also use profiles to deploy multiple services and applications from the same codebase.
+
+=== Skaffold with Spring Boot Devtools
+
+Spring Boot devtools monitors the compiled application code and restarts Spring if it sees changes in "significant" places (like `.classs` files and `.properties` files). Skaffold has a neat "hot sync" feature where it can be configured to skip the build step when source files change, and just copy them into the running container in Kubernetes.
+
+As an example, consider working with Spring Boot 2.3 and the buildpack support for building images. First we need devtools as a dependency:
+
+```xml
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+```
+
+The application build needs to know about the devtools, so they don't get excluded from the image. And we need to parameterize the image name:
+
+```xml
+	<properties>
+		<docker.image>dsyer/demo</docker.image>
+	</properties>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<excludeDevtools>false</excludeDevtools>
+					<image>
+						<name>${docker.image}</name>
+					</image>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+```
+
+and then you can use Spring Boot to build the image via a custom builder in `skaffold.yaml`:
+
+```yaml
+apiVersion: skaffold/v2alpha4
+kind: Config
+build:
+  artifacts:
+  - image: dsyer/demo
+    custom:
+      buildCommand: cd demo && ./mvnw spring-boot:build-image -D docker.image=$IMAGE && docker push $IMAGE
+      dependencies:
+        paths:
+        - demo/pom.xml
+        - demo/src/main/resources
+        - demo/target/classes
+    sync:
+      manual:
+      - src: "demo/src/main/resources/**/*"
+        dest: /workspace/BOOT-INF/classes
+        strip: demo/src/main/resources/
+      - src: "demo/target/classes/**/*"
+        dest: /workspace/BOOT-INF/classes
+        strip: demo/target/classes/
+deploy:
+  kustomize:
+    paths: 
+    - "layers/samples/simple"
+```
+
+The "sync" resource paths have to match something in the "dependencies" otherwise a change will trigger a build instead of a sync.
+
 == Application Metadata with Kapp
 
 There are quite a few tools available that manage a set of kubernetes resources, applying a label to them, and allowing users to adjust the resources as a group. The lightest weight of these tools is probably `kapp` (https://github.com/k14s/kapp[from k14s]). It works without admin privileges and does not use custom CRDs, so you can use it as a regular user in any namespace you have access to.
