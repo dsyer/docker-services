@@ -12,3 +12,4 @@ containerd*
 .vscode/
 .attach_pid*
 dive.log
+/gce

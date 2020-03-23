@@ -452,6 +452,7 @@ spec:
               port: 8080
             initialDelaySeconds: 10
             periodSeconds: 3
+            timeoutSeconds: 5
           readinessProbe:
             initialDelaySeconds: 20
             periodSeconds: 10
@@ -459,6 +460,9 @@ spec:
               path: /actuator/health
               port: 8080
 ```
+
+NOTE: Sometimes network issues bounce the liveness probe for no reason on startup so we extended the timeout to 5 seconds. A startup probe might be a good idea in some cases.
+
 
 When we create the merged configuration:
 

@@ -8,6 +8,9 @@ in stdenv.mkDerivation {
   name = "env";
   buildInputs = [
     jdk11
+    kind
+    kubectl
+    skaffold
     vscode-with-extensions
   ];
 } 
