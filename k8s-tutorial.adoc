@@ -472,6 +472,10 @@ $ kustomize build k8s/prod
 
 `kustomize` matches the `kind` and `metadata.name` in the patch with the deployment in the base, adding the probes. You could also change the container image, port mapping, volume mounts, etc. (anything that might change between environments).
 
+=== Liveness and Readiness
+
+Empirically, when all pods are unhealthy you get "Failed to connect" for requests inside the cluster. For requests through port-forward you seem to get 200 responses, so that's not helpful. A port-forward routes to a single pod when established, bypassing the service. So all traffic on that port will “ignore” the ready probe, since that’s managed in the service. Fortunately nobody would use a port forward in production, so even an app exposed to the outside through a load balancer or ingress would fail to connect if all pods were unhealthy.
+
 === Add a Config Map
 
 A useful customization is to add a config map with a file called `application.properties` so that Spring Boot can consume it easily. The config map isn't in the base deployment, so we add it as a resource:
@@ -1247,6 +1251,123 @@ metadata:
 ```
 
 `deployer.yaml` is the container and deployer declarations, and `binding.yaml` is the patch with the volume mount.
+
+== Metrics Server
+
+First make sure you have a CPU request in your app container, e.g:
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app
+spec:
+  template:
+    spec:
+      containers:
+...
+        resources:
+          requests:
+            cpu: 200m
+          limits:
+            cpu: 500m
+```
+
+You need a [Metrics Server](https://github.com/kubernetes-sigs/metrics-server) to benefit from `kubectl top` and the [Autoscaler](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/). Kind doesn't support the metrics server [out of the box](https://github.com/kubernetes-sigs/kind/issues/398):
+
+```
+$ kubectl top pod
+W0323 08:01:25.173488   18448 top_pod.go:266] Metrics not available for pod default/app-5f969c594d-79s79, age: 65h4m54.173475197s
+error: Metrics not available for pod default/app-5f969c594d-79s79, age: 65h4m54.173475197s
+```
+
+But you _can_ install it using the manifests in the [Metrics Server source code](https://github.com/kubernetes-sigs/metrics-server/blob/master/deploy/kubernetes/). It is available here as well with some tweaks to do with service ports and secrets:
+
+```
+$ kubectl apply -f metrics/manifest.yaml
+$ kubectl top pod
+NAME                   CPU(cores)   MEMORY(bytes)   
+app-79fdc46f88-mjm5c   217m         143Mi  
+```
+
+NOTE: You might need to recycle the application Pods to make them wake up to the metrics server.
+
+== Autoscaler
+
+First make sure you have a CPU request in your app container:
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app
+spec:
+  template:
+    spec:
+      containers:
+...
+        resources:
+          requests:
+            cpu: 200m
+          limits:
+            cpu: 500m
+```
+
+And recycle the deployment (Skaffold will do it for you). Then add an autoscaler:
+
+```
+$ kubectl autoscale deployment app --min=1 --max=3
+$ kubectl get hpa
+NAME   REFERENCE        TARGETS         MINPODS   MAXPODS   REPLICAS   AGE
+app    Deployment/app   5%/80%          1         3         1          9s
+```
+
+Hit the endpoints hard with (e.g.) Apache Bench:
+
+```
+$ ab -c 100 -n 10000 http://localhost:4503/actuator/
+```
+
+and you should see it scale up:
+
+```
+$ kubectl get hpa
+NAME   REFERENCE        TARGETS         MINPODS   MAXPODS   REPLICAS   AGE
+app    Deployment/app   112%/80%        1         3         2          7m25s
+```
+
+and then back down:
+
+```
+$ kubectl get hpa
+NAME   REFERENCE        TARGETS         MINPODS   MAXPODS   REPLICAS   AGE
+app    Deployment/app   5%/80%          1         3         1          20m
+```
+
+NOTE: If you update the app and it restarts or redeploys, the CPU activity on startup can trigger an autoscale up. Kind of nuts. It's potentially a thundering herd.
+
+The `kubectl autoscale` command generates a manifest for the "hpa" something like this:
+
+```yaml
+apiVersion: autoscaling/v2beta2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: app
+spec:
+  maxReplicas: 3
+  metrics:
+  - resource:
+      name: cpu
+      target:
+        averageUtilization: 80
+        type: Utilization
+    type: Resource
+  minReplicas: 1
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: app
+```
 
 == Basic Observability with Prometheus
 

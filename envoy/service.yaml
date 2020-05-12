@@ -1,0 +1,40 @@
+# kubectl apply -f https://www.getambassador.io/yaml/ambassador/ambassador-rbac.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    service: ambassador
+  name: ambassador
+spec:
+  # type: LoadBalancer
+  ports:
+  - port: 80
+    targetPort: 8080
+  selector:
+    service: ambassador
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: google
+  annotations:
+    getambassador.io/config: |
+      ---
+      apiVersion: ambassador/v0
+      kind:  Mapping
+      name:  google_mapping
+      prefix: /google/
+      service: https://example.com
+      host_rewrite: www.example.com
+spec:
+  type: ClusterIP
+  clusterIP: None
+
+---
+apiVersion: getambassador.io/v2
+kind:  Mapping
+metadata:
+  name:  httpbin-mapping
+spec:
+  prefix: /httpbin/
+  service: http://httpbin.org
