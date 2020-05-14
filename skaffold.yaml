@@ -5,7 +5,7 @@ build:
   - image: dsyer/demo
     context: ./demo
     custom:
-      buildCommand: ./mvnw spring-boot:build-image -D docker.image=$IMAGE && docker push $IMAGE
+      buildCommand: ./mvnw spring-boot:build-image -D spring-boot.build-image.imageName=$IMAGE && docker push $IMAGE
       dependencies:
         paths:
         - pom.xml
