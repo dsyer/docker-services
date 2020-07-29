@@ -21,7 +21,12 @@ patch: |-
               httpGet:
                 path: /actuator/info
                 port: 8080
+              initialDelaySeconds: 10
+              periodSeconds: 3
+              timeoutSeconds: 5
             readinessProbe:
+              initialDelaySeconds: 20
+              periodSeconds: 10
               httpGet:
                 path: /actuator/health
                 port: 8080
