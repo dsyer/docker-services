@@ -543,7 +543,7 @@ $ curl localhost:8080/actuator/info
 Development and deployment can be a series of awkward, unconnected steps. https://github.com/GoogleContainerTools/skaffold[Skaffold] provides a way to stitch them together and take out some of the toil. A basic configuration file for the demo project could look like this:
 
 ```yaml
-apiVersion: skaffold/v2alpha2
+apiVersion: skaffold/v2beta5
 kind: Config
 build:
   artifacts:
@@ -553,13 +553,14 @@ build:
     useBuildkit: true
 deploy:
   kustomize:
-    path: ./layers/samples/simple
+    paths: 
+    - ./layers/samples/simple
 ```
 
 It will build the `./demo` app, using docker (but other options are available) and deploy it using the "simple" kustomization. You can add a command line option to also forward a port and report it on the command line:
 
 ```
-$ skaffold dev --forward-port
+$ skaffold dev --port-forward
 ...
 Starting deploy...
  - service/demo unchanged
@@ -612,7 +613,7 @@ The application build needs to know about the devtools, so they don't get exclud
 and then you can use Spring Boot to build the image via a custom builder in `skaffold.yaml`:
 
 ```yaml
-apiVersion: skaffold/v2alpha4
+apiVersion: skaffold/v2beta5
 kind: Config
 build:
   artifacts:
