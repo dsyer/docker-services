@@ -449,7 +449,7 @@ Simple port forwarding for localhost:
 
 ```
 $ kubectl create service clusterip demo --tcp=8080:8080
-$ $ kubectl port-forward svc/demo 8080:8080
+$ kubectl port-forward svc/demo 8080:8080
 $ curl localhost:8080
 Hello World!
 ```
