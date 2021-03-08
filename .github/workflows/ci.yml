@@ -24,10 +24,6 @@ jobs:
           registry: docker-daemon
       fail-fast: false
     runs-on: ${{ matrix.config.os }}
-    env:
-      CLUSTER: ${{ matrix.config.cluster }}
-      REGISTRY: ${{ matrix.config.registry }}
-      DOCKER_BUILDKIT: 1
     steps:
       - uses: actions/checkout@v1
       - uses: actions/setup-java@v1
@@ -37,8 +33,11 @@ jobs:
         run: |
           job=$(date +%s) # TODO use something that is assigned by CI to guarantee uniqueness
           echo "JOB_ID=${job}"
-          echo "##[set-env name=CLUSTER_NAME]cli-${job}-${{ matrix.config.qualifier }}"
-          echo "##[set-env name=NAMESPACE]cli-${job}-${{ matrix.config.qualifier }}"
+          echo "CLUSTER_NAME=cli-${job}-${{ matrix.config.qualifier }}" >> $GITHUB_ENV
+          echo "NAMESPACE=cli-${job}-${{ matrix.config.qualifier }}" >> $GITHUB_ENV
+          echo "CLUSTER=${{ matrix.config.cluster }}" >> $GITHUB_ENV
+          echo "REGISTRY=${{ matrix.config.registry }}" >> $GITHUB_ENV
+          echo "DOCKER_BUILDKIT=1" >> $GITHUB_ENV
         shell: bash
       - name: Fetch FATS
         run: .github/workflows/fats.sh
