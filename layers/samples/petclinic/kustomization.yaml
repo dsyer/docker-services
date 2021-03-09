@@ -13,7 +13,7 @@ transformers:
 - ../../actuator
 images:
   - name: dsyer/template
-    newName: dsyer/petclinic
+    newName: springio/petclinic
 configMapGenerator:
   - name: env-config
     behavior: merge
