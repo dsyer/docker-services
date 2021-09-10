@@ -20,7 +20,7 @@ spec:
         fsGroup: 2000
       containers:
         - image: mysql:5.6
-          name: mysql
+          name: app
           env:
             - name: MYSQL_ROOT_PASSWORD
               value: password
