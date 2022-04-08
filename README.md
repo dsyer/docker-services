@@ -437,6 +437,12 @@ $ APISERVER=https://$(kubectl -n default get endpoints kubernetes --no-headers |
 curl -s $APISERVER/openapi/v2  --header "Authorization: Bearer $TOKEN" --cacert /tmp/ca.crt | tee /tmp/k8s.json
 ```
 
+or just use `kubectl get --raw ...`:
+
+```
+$ kubectl get --raw /openapi/v2 | tee /tmp/k8s.json
+```
+
 ## Quick and Dirty Ingress
 
 Simple port forwarding for localhost:
@@ -476,3 +482,7 @@ The service is now available on the host on port 8080. You can extract that ephe
 $ kubectl get service dev-app -o=jsonpath="{.spec.ports[?(@.port == 8080)].nodePort}"
 31672
 ```
+
+## Exposing a Port in a Running Container
+
+https://stackoverflow.com/a/49165016/1259109
