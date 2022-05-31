@@ -5,23 +5,8 @@ resources:
   - pvc.yaml
   - deployment.yaml
   - config.yaml
-configMapGenerator:
+secretGenerator:
   - name: mysql-config
     behavior: merge
-    files:
-      - application.properties
-  - name: mysql-env
-    behavior: merge
-    literals:
-      - MYSQL_HOST=$(MYSQL_HOST)
-      - MYSQL_USER=root
-      - MYSQL_PASSWORD=password
-      - MYSQL_DATABASE=test
-vars:
-  - name: MYSQL_HOST
-    objref:
-      apiVersion: v1
-      kind: Service
-      name: mysql
-configurations:
-  - varreference.yaml
+    envs:
+      - application.env

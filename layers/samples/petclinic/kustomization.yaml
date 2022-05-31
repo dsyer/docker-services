@@ -16,10 +16,9 @@ transformers:
 images:
   - name: dsyer/template
     newName: springio/petclinic
-configMapGenerator:
-  - name: env-config
-    behavior: merge
-    literals:
-      - SPRING_CONFIG_LOCATION=classpath:/,file:///config/bindings/mysql/meta/
-      - MANAGEMENT_ENDPOINTS_WEB_BASEPATH=/actuator
-      - DATABASE=mysql
+vars:
+  - name: MYSQL_HOST
+    objref:
+      apiVersion: v1
+      kind: Service
+      name: mysql
