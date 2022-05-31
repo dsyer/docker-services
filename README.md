@@ -56,6 +56,21 @@ where the VPC id can be copied from [AWS Console](https://console.aws.amazon.com
 Disk full? Clean up:
 
 ```
+$ docker system prune -a
+```
+
+
+More manually:
+
+```
+$ docker volume prune -f
+$ docker container prune -f
+$ docker image prune -f
+```
+
+or
+
+```
 $ docker rm $(docker ps -a -f status=exited -q)
 $ docker rmi $(docker images -f dangling=true -q)
 $ docker volume rm $(docker volume ls -f dangling=true -q)
