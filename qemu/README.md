@@ -11,11 +11,11 @@ At this point you can iterate until you have a basic VM image you can run apps f
 Things to do maybe:
 
 * Enable `PermitRootLogin` in `/etc/ssh/sshd_config` and `service sshd restart`
-* Comment oput the "community" entry in `/etc/apk/repositories`
-* Install JVM with `apk add openjdk8`
+* Uncomment the "community" entry in `/etc/apk/repositories`
+* Install JVM with `apk add openjdk21`
 * Add `JAVA_HOME` env var and `$JAVA_HOME/bin` to `PATH` in `/etc/profile.d/java.sh`
 
-If you open up `sshd` then you can `ssh -p 2222 root@192.168.2.19` (your local IP address) or `scp -P 2222 app.jar root@192.168.2.19:~` (for instance).
+If you open up `sshd` then you can `ssh -p 2222 root@192.168.68.144` (your local IP address) or `scp -P 2222 app.jar root@192.168.68.144:~` (for instance).
 
 Once you have a base image ready, copy or rename the `alpine.qcow` disk image to `disk.qcow` and use `run.sh` to run it headless. 
 
